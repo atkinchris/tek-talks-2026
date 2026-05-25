@@ -100,14 +100,13 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 - This is why we cannot just write a normal program to read the key. We need kernel-level access.
 
 **The approach (1.5 min):**
-- The kernel enforces code-level signing - you cannot load any arbitrary kernel module. But there is no boot chain verification.
-- That means we can tamper with the kernel itself on disk. Modify the kernel, patch out the signing checks.
-- Recon the firmware for attack surface: find an old kernel version with a known CVE for initial code execution.
+- No boot chain verification, so we can tamper with the kernel on disk. Patch out the kernel's code-signing checks so it will accept unsigned modules.
+- But we still only have user-level access at runtime. Things like the passwd file are in the encrypted rootfs, so we cannot just log in as root.
+- Recon the firmware for attack surface: find an old kernel version with a known CVE that allows privilege escalation.
 
 **Apply it (1.5 min):**
-- Exploit the CVE to get initial code execution.
-- Modify the kernel on disk to patch out code-signing enforcement.
-- Reboot, load a custom kernel module that reads the key from secure registers.
+- Exploit the CVE to escalate from user level to kernel level at runtime.
+- Load a custom kernel module (now permitted, since we patched out signing) that reads the key from secure registers.
 
 **The win (1 min):**
 - Second lock picked.
