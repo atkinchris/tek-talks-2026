@@ -4,37 +4,137 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="shared/style.css">
   <style>
-    .annotation {
-      position: absolute;
-      background: var(--accent-blue);
-      color: white;
-      font-size: 26px;
-      font-weight: 700;
-      padding: 8px 20px;
-      border-radius: 8px;
-      white-space: nowrap;
+    .pcb {
+      background: #2d5a27;
+      border-radius: 16px;
+      padding: 48px 56px;
+      position: relative;
+      width: 520px;
+      box-shadow: inset 0 0 0 3px #3d7a34, 0 4px 24px rgba(0,0,0,0.15);
     }
-    .annotation::after {
-      content: '';
+    .pcb-trace {
       position: absolute;
-      bottom: -12px;
-      left: 24px;
-      border: 6px solid transparent;
-      border-top-color: var(--accent-blue);
+      background: #c4a44a;
+      border-radius: 1px;
+    }
+    .pcb-chip {
+      width: 160px;
+      height: 100px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      margin: 40px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #666;
+      font-family: var(--font-mono);
+      letter-spacing: 0.05em;
+    }
+    .uart-header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .uart-pin {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .pin-pad {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 3px solid #c4a44a;
+      background: #2d5a27;
+      flex-shrink: 0;
+    }
+    .pin-pad.soldered {
+      background: #d4d4d4;
+      border-color: #d4d4d4;
+      box-shadow: 0 0 6px rgba(212, 212, 212, 0.4);
+    }
+    .pin-label {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      color: #c4a44a;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .pin-desc {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .pin-desc-label {
+      font-size: 32px;
+      font-weight: 700;
+      width: 60px;
+    }
+    .pin-desc-text {
+      font-size: 28px;
+      color: var(--text-soft);
+    }
+    .connector-line {
+      width: 80px;
+      height: 2px;
+      background: var(--border);
+      flex-shrink: 0;
     }
   </style>
 </head>
 <body>
-  <div class="slide slide-photo">
-    <img src="assets/device-1-pcb.jpg" alt="PCB with UART pins highlighted">
-    <!-- Adjust top/left percentages to position the labels over the actual pins in your photo -->
-    <div class="annotation" style="top: 32%; left: 38%;">TX</div>
-    <div class="annotation" style="top: 38%; left: 38%;">RX</div>
-    <div class="annotation" style="top: 44%; left: 38%;">GND</div>
-    <div class="overlay">
-      <h2>There are the UART pins.</h2>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">UART</div>
+    <h2 style="margin-bottom: 48px;">Spotting UART on a PCB.</h2>
+    <div style="display: flex; gap: 80px; width: 100%; align-items: center;">
+      <div>
+        <div class="pcb">
+          <div class="uart-header">
+            <div class="uart-pin">
+              <div class="pin-pad"></div>
+              <span class="pin-label">VCC</span>
+            </div>
+            <div class="uart-pin">
+              <div class="pin-pad soldered"></div>
+              <span class="pin-label">TX</span>
+            </div>
+            <div class="uart-pin">
+              <div class="pin-pad soldered"></div>
+              <span class="pin-label">RX</span>
+            </div>
+            <div class="uart-pin">
+              <div class="pin-pad soldered"></div>
+              <span class="pin-label">GND</span>
+            </div>
+          </div>
+          <div class="pcb-chip">SoC</div>
+        </div>
+      </div>
+      <div style="flex: 1;">
+        <p style="font-size: 36px; color: var(--text); font-weight: 600; margin-bottom: 32px;">Look for a row of 3&ndash;4 pads, often unlabelled, near the edge of the board.</p>
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <div class="pin-desc">
+            <div class="pin-desc-label blue">TX</div>
+            <div class="pin-desc-text">Transmit &mdash; data out from the device</div>
+          </div>
+          <div class="pin-desc">
+            <div class="pin-desc-label blue">RX</div>
+            <div class="pin-desc-text">Receive &mdash; data in to the device</div>
+          </div>
+          <div class="pin-desc">
+            <div class="pin-desc-label" style="color: var(--text-soft);">GND</div>
+            <div class="pin-desc-text">Ground &mdash; shared reference voltage</div>
+          </div>
+          <div class="pin-desc">
+            <div class="pin-desc-label" style="color: var(--text-soft);">VCC</div>
+            <div class="pin-desc-text">Power &mdash; usually not needed</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="slide-number" style="color: rgba(255,255,255,0.5);">08</div>
+    <div class="slide-number">08</div>
   </div>
 </body>
 </html>
