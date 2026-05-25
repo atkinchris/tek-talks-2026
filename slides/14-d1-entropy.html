@@ -4,35 +4,165 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="shared/style.css">
   <style>
-    .entropy-bar {
-      height: 80px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      padding: 0 32px;
-      font-size: 30px;
+    .grid-label {
+      font-size: 28px;
       font-weight: 600;
-      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
     }
-    .entropy-label { margin-bottom: 8px; font-size: 28px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; }
+    .grid-sub {
+      font-size: 26px;
+      color: var(--text-soft);
+      margin-top: 14px;
+    }
+    .grid-canvas {
+      width: 100%;
+      aspect-ratio: 100 / 44;
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      border-radius: 8px;
+      display: block;
+    }
   </style>
 </head>
 <body>
   <div class="slide" style="align-items: flex-start;">
     <div class="slide-label">Entropy</div>
-    <h2 style="margin-bottom: 48px;">Randomness reveals structure.</h2>
-    <div style="width: 100%;">
-      <p class="entropy-label">Low entropy &mdash; readable, structured data</p>
-      <div class="entropy-bar" style="background: linear-gradient(to right, #bbf7d0 0%, #86efac 40%, #4ade80 70%, #86efac 85%, #bbf7d0 100%); color: #166534;">
-        Text file &nbsp;&bull;&nbsp; Source code &nbsp;&bull;&nbsp; Linux kernel
+    <h2 style="margin-bottom: 40px;">Randomness reveals structure.</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; width: 100%;">
+      <div>
+        <p class="grid-label" style="color: var(--accent-green);">Low entropy &mdash; Linux kernel</p>
+        <canvas id="low" width="100" height="44" class="grid-canvas"
+          style="border: 2px solid var(--accent-green);"></canvas>
+        <p class="grid-sub">Patterns visible &mdash; structured, analysable</p>
       </div>
-      <p class="entropy-label" style="margin-top: 40px;">High entropy &mdash; compressed or encrypted data</p>
-      <div class="entropy-bar" style="background: linear-gradient(to right, #fca5a5 0%, #f87171 30%, #ef4444 55%, #f87171 75%, #fca5a5 100%); color: #7f1d1d;">
-        Encrypted rootfs &nbsp;&bull;&nbsp; Compressed archive &nbsp;&bull;&nbsp; Random noise
+      <div>
+        <p class="grid-label" style="color: var(--accent-red);">High entropy &mdash; encrypted rootfs</p>
+        <canvas id="high" width="100" height="44" class="grid-canvas"
+          style="border: 2px solid var(--accent-red);"></canvas>
+        <p class="grid-sub">Uniform noise &mdash; compressed or encrypted</p>
       </div>
     </div>
-    <p class="soft" style="margin-top: 48px;">The rootfs reads as near-random &mdash; it's encrypted. But the kernel? Low entropy. We can analyse it.</p>
+    <p class="soft" style="margin-top: 40px;">The rootfs reads as near-random &mdash; it's encrypted. But the kernel? Low entropy. We can analyse it.</p>
     <div class="slide-number">14</div>
   </div>
+  <script>
+    (function () {
+      /* Seeded PRNG (mulberry32) for deterministic output */
+      function prng(seed) {
+        return function () {
+          seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+          var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+
+      var W = 100, H = 44;
+
+      /* Colourmap: deep indigo -> blue -> teal -> green -> amber -> cream */
+      var STOPS = [
+        [0.00,  13,   8,  35],
+        [0.14,  38,  28, 108],
+        [0.28,  22,  74, 156],
+        [0.42,  14, 132, 144],
+        [0.56,  46, 178,  76],
+        [0.70, 156, 204,  40],
+        [0.84, 228, 156,  36],
+        [1.00, 250, 238, 220]
+      ];
+
+      function brgb(b) {
+        var t = b / 255, i = 0;
+        while (i < STOPS.length - 2 && STOPS[i + 1][0] <= t) i++;
+        var a = STOPS[i], s = STOPS[i + 1];
+        var f = (t - a[0]) / (s[0] - a[0]);
+        return [
+          Math.round(a[1] + f * (s[1] - a[1])),
+          Math.round(a[2] + f * (s[2] - a[2])),
+          Math.round(a[3] + f * (s[3] - a[3]))
+        ];
+      }
+
+      function lowEntropy(rng) {
+        var d = new Uint8Array(W * H);
+        for (var r = 0; r < H; r++) {
+          for (var c = 0; c < W; c++) {
+            var b;
+            if (r < 5) {
+              /* Zeros - padding / alignment */
+              b = rng() < 0.08 ? Math.floor(rng() * 24) : 0;
+            } else if (r < 6) {
+              /* Transition */
+              b = rng() < 0.5 ? 0 : Math.floor(rng() * 40);
+            } else if (r < 14) {
+              /* ARM instructions - repeating 4-byte patterns */
+              var ps = [
+                [0xE5, 0x9F, 0x30, 0x04],
+                [0xE3, 0xA0, 0x10, 0x00],
+                [0xE1, 0x2F, 0xFF, 0x13],
+                [0xEB, 0x00, 0x00, 0x0A]
+              ];
+              var p = ps[Math.floor((r - 6) / 2) % ps.length];
+              b = p[c % 4];
+              if (rng() < 0.25) b = (b + Math.floor(rng() * 8) - 4) & 0xFF;
+            } else if (r < 16) {
+              /* Transition */
+              b = rng() < 0.3 ? 0 : (0x20 + Math.floor(rng() * 80));
+            } else if (r < 26) {
+              /* ASCII strings with null separators */
+              if (rng() < 0.12) {
+                b = 0;
+              } else {
+                b = 0x61 + Math.floor(rng() * 26);
+                if (rng() < 0.18) b = 0x20;
+                if (rng() < 0.06) b = 0x2E;
+                if (rng() < 0.04) b = 0x2F;
+              }
+            } else if (r < 28) {
+              /* Transition */
+              b = Math.floor(rng() * 60) + 0x10;
+            } else if (r < 35) {
+              /* Data tables - sequential values */
+              b = ((c * 3 + r * 7) % 64) + 0x10;
+            } else if (r < 37) {
+              /* Transition */
+              b = rng() < 0.4 ? 0xFF : (0xC0 + Math.floor(rng() * 60));
+            } else {
+              /* 0xFF runs - unused flash memory */
+              b = rng() < 0.04 ? Math.floor(rng() * 20) : 0xFF;
+            }
+            d[r * W + c] = Math.max(0, Math.min(255, b));
+          }
+        }
+        return d;
+      }
+
+      function highEntropy(rng) {
+        var d = new Uint8Array(W * H);
+        for (var i = 0; i < d.length; i++) d[i] = Math.floor(rng() * 256);
+        return d;
+      }
+
+      function render(id, data) {
+        var cv = document.getElementById(id);
+        var ctx = cv.getContext('2d');
+        var img = ctx.createImageData(W, H);
+        for (var i = 0; i < data.length; i++) {
+          var rgb = brgb(data[i]);
+          var j = i * 4;
+          img.data[j]     = rgb[0];
+          img.data[j + 1] = rgb[1];
+          img.data[j + 2] = rgb[2];
+          img.data[j + 3] = 255;
+        }
+        ctx.putImageData(img, 0, 0);
+      }
+
+      render('low', lowEntropy(prng(42)));
+      render('high', highEntropy(prng(12345)));
+    })();
+  </script>
 </body>
 </html>
