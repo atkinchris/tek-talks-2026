@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Applying it</div>
+    <h2 style="margin-bottom: 48px;">Connected. Got a shell.</h2>
+    <div class="terminal">
+      <span class="prompt">U-Boot&gt; </span>printenv<br>
+      bootargs=console=ttyS0,115200 root=/dev/mmcblk0p2 ...<br>
+      <span class="comment"># It's Linux. Let's dump the firmware.</span><br>
+      <br>
+      <span class="prompt">U-Boot&gt; </span>mmc read 0x42000000 0x0 0x10000<br>
+      <span class="hi">reading... done</span><br>
+    </div>
+    <p class="soft" style="margin-top: 36px;">DFU/maskrom mode means we can always reflash &mdash; bricking is nearly impossible.</p>
+    <div class="slide-number">10</div>
+  </div>
+</body>
+</html>
