@@ -2,9 +2,12 @@
   "name": "tek-talks-2026",
   "version": "1.0.0",
   "scripts": {
-    "screenshot": "node screenshot.js"
+    "screenshot": "node screenshot.js",
+    "pptx": "node assemble-pptx.js",
+    "build": "node screenshot.js && node assemble-pptx.js"
   },
   "dependencies": {
+    "pptxgenjs": "^4.0.1",
     "puppeteer": "^22.0.0"
   }
 }
