@@ -134,8 +134,9 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 - Look at what is not covered by signing. Splash logos - branding images loaded during boot. Processed by the bootloader but not part of the signed chain.
 
 **Aside - fuzzing (2 min):**
-- What is fuzzing: throwing enormous amounts of random or semi-random input at software to find crashes.
-- AFL (American Fuzzy Lop): does this intelligently - mutates inputs, tracks which code paths they exercise, steers towards unexplored territory.
+- What is fuzzing: throwing enormous amounts of random or semi-random input at software to find crashes or hangs - because a crash or hang means the software did something unexpected, and unexpected behaviour is exploitable.
+- Brief explanation of a buffer overflow: software allocates a fixed amount of memory for input, but if the input is larger than expected, it spills over into adjacent memory. That adjacent memory might contain instructions the processor is about to execute - so by controlling the overflow, you control what the processor does next.
+- AFL (American Fuzzy Lop): does fuzzing intelligently - mutates inputs, tracks which code paths they exercise, steers towards unexplored territory.
 - "We pointed AFL at the bootloader's splash logo parser."
 
 **Apply it - TOCTOU (1 min):**
