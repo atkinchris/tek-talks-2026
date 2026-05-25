@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">The approach</div>
+    <h2 style="margin-bottom: 48px;">No boot chain verification &mdash;<br>we can tamper the kernel on disk.</h2>
+    <div style="display: flex; gap: 40px; width: 100%;">
+      <div class="box box-red" style="flex: 1;">
+        <h3 class="red" style="margin-bottom: 16px;">Too hard</h3>
+        <p>Patching passwd and Linux's access controls. Battle-tested code spread across too many places.</p>
+      </div>
+      <div style="font-size: 56px; color: var(--text-soft); align-self: center; flex-shrink: 0;">vs</div>
+      <div class="box box-green" style="flex: 1;">
+        <h3 class="green" style="margin-bottom: 16px;">Easy target</h3>
+        <p>The manufacturer's custom code-signing check &mdash; hastily added on top. Patch it out.</p>
+      </div>
+    </div>
+    <p class="soft" style="margin-top: 40px;">Kernel now accepts unsigned modules. But we still need a way to escalate to kernel level at runtime &mdash; the kernel CVE gives us that.</p>
+    <div class="slide-number">19</div>
+  </div>
+</body>
+</html>

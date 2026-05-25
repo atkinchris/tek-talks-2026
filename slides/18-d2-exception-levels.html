@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Exception levels</div>
+    <h2 style="margin-bottom: 48px;">Not all code runs equal.</h2>
+    <div class="layers" style="max-width: 1000px;">
+      <div class="layer layer-user">
+        EL0 &mdash; User land &nbsp;&bull;&nbsp; Your app, games, shell
+      </div>
+      <div style="text-align: center; font-size: 32px; color: var(--text-soft); line-height: 1;">&#8595; can request up</div>
+      <div class="layer layer-kernel">
+        EL1 &mdash; Kernel &nbsp;&bull;&nbsp; Manages hardware, enforces access
+      </div>
+      <div style="text-align: center; font-size: 32px; color: var(--text-soft); line-height: 1;">&#8595; only accessible from here</div>
+      <div class="layer layer-hw">
+        Secure registers &nbsp;&bull;&nbsp; Hardware encryption keys
+      </div>
+    </div>
+    <p class="soft" style="margin-top: 48px; max-width: 1200px;">A normal user-land program can't read the secure registers. We need to be the kernel. We need a kernel module &mdash; but the kernel won't load unsigned ones.</p>
+    <div class="slide-number">18</div>
+  </div>
+</body>
+</html>
