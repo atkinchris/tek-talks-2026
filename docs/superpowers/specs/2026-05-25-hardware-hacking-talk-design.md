@@ -143,7 +143,7 @@ Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minute
 - "We pointed AFL at the bootloader's splash logo parser."
 
 **Apply it - TOCTOU (1 min):**
-- Found a memory overflow in the logo parser.
+- Found a buffer overflow in the logo parser.
 - Overwrite instructions after the bootloader chain has been verified, but before the verified code executes. A time-of-check to time-of-use (TOCTOU) attack.
 - Brief visual: the chain checks everything, says "all good", then we rewrite what it just approved before it runs.
 
