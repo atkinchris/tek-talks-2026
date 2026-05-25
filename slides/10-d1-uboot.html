@@ -11,12 +11,15 @@
     <div class="terminal">
       <span class="prompt">U-Boot&gt; </span>printenv<br>
       bootargs=console=ttyS0,115200 root=/dev/mmcblk0p2 ...<br>
-      <span class="comment"># It's Linux. Let's dump the firmware.</span><br>
+      <span class="comment"># U-Boot bootloader shell. Let's dump the firmware.</span><br>
       <br>
-      <span class="prompt">U-Boot&gt; </span>mmc read 0x42000000 0x0 0x10000<br>
-      <span class="hi">reading... done</span><br>
+      <span class="prompt">U-Boot&gt; </span>ums 0 mmc 0<br>
+      <span class="hi">UMS: LUN 0, dev mmc 0, hwpart 0 ...</span><br>
+      <br>
+      <span class="comment"># On the host &mdash; the eMMC appears as a USB drive</span><br>
+      <span class="prompt">$ </span>sudo dd if=/dev/sdb of=firmware.bin bs=1M<br>
     </div>
-    <p class="soft" style="margin-top: 36px;">DFU/maskrom mode means we can always reflash &mdash; bricking is nearly impossible.</p>
+    <p class="soft" style="margin-top: 36px;"><code style="font-family: var(--font-mono); background: var(--bg-soft); padding: 4px 10px; border-radius: 6px;">ums</code> turns U-Boot into a USB mass storage gadget &mdash; the host sees the eMMC as an external drive.</p>
     <div class="slide-number">10</div>
   </div>
 </body>
