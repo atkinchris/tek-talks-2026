@@ -3,36 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="shared/style.css">
+  <style>
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 28px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .step-body {
+      flex: 1;
+    }
+    .step-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .step-detail {
+      font-family: var(--font-mono);
+      background: var(--terminal-bg);
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-size: 24px;
+      color: var(--terminal-text);
+      line-height: 1.6;
+    }
+    .step-detail .hi     { color: #ce9178; font-weight: 700; }
+    .step-detail .fn     { color: #4ec9b0; }
+    .step-detail .key    { color: #ce9178; font-weight: 700; letter-spacing: 0.02em; }
+    .arrow-row {
+      padding: 6px 0 6px 80px;
+      font-size: 28px;
+      color: var(--text-soft);
+    }
+    .discovery {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 24px 36px;
+      background: #fef2f2;
+      border: 2px solid var(--accent-red);
+      border-radius: 12px;
+      width: 100%;
+    }
+    .discovery-text {
+      font-size: 30px;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .discovery-text strong { color: var(--accent-red); }
+  </style>
 </head>
 <body>
   <div class="slide" style="align-items: flex-start;">
     <div class="slide-label">Ghidra</div>
-    <h2 style="margin-bottom: 40px;">Compare our kernel to a known Linux kernel.</h2>
-    <div style="display: flex; gap: 40px; width: 100%; align-items: flex-start;">
-      <div style="flex: 1;">
-        <p style="font-size: 28px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;">Known Linux kernel</p>
-        <div class="terminal" style="font-size: 24px;">
-          squashfs_decompress(<br>
-          &nbsp;&nbsp;const void *in,<br>
-          &nbsp;&nbsp;void *out,<br>
-          &nbsp;&nbsp;int inlen<br>
-          ) { ... }
+    <h2 style="margin-bottom: 32px;">Strings + Ghidra leads straight to the key.</h2>
+
+    <div style="display: flex; flex-direction: column; width: 100%; gap: 0; margin-bottom: 52px;">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <p class="step-title"><code style="font-family: var(--font-mono); background: var(--terminal-bg); color: var(--terminal-text); padding: 2px 10px; border-radius: 6px; font-size: 28px;">strings</code> reveals an unknown symbol</p>
+          <div class="step-detail">
+            <span class="fn">squashfs_decrypt_bh_to_actor</span>
+            &nbsp;&nbsp;<span style="color:#6a9955;">// not in any upstream Linux source</span>
+          </div>
         </div>
       </div>
-      <div style="font-size: 56px; color: var(--accent-red); align-self: center; flex-shrink: 0;">!=</div>
-      <div style="flex: 1;">
-        <p style="font-size: 28px; font-weight: 600; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;">This kernel (custom)</p>
-        <div class="terminal" style="font-size: 24px;">
-          squashfs_decompress(<br>
-          &nbsp;&nbsp;const void *in,<br>
-          &nbsp;&nbsp;void *out,<br>
-          &nbsp;&nbsp;int inlen,<br>
-          &nbsp;&nbsp;<span class="hi">const u8 *key</span><br>
-          ) { ... }
+
+      <div class="arrow-row">&#8595;</div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <p class="step-title">Ghidra decompiles the function</p>
+          <div class="step-detail">
+            <span style="color:#c586c0;">void</span>
+            <span class="fn"> squashfs_decrypt_bh_to_actor</span>(<span style="color:#9cdcfe;">buf</span>, <span style="color:#9cdcfe;">actor</span>) {<br>
+            &nbsp;&nbsp;<span style="color:#c586c0;">const</span> u8 *key = <span class="hi">CONFIG_SQUASHFS_FIXED_KEY</span>;<br>
+            &nbsp;&nbsp;aes_decrypt(buf, actor, key);<br>
+            }
+          </div>
         </div>
+      </div>
+
+      <div class="arrow-row">&#8595;</div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <p class="step-title">The key is a hardcoded constant in the binary</p>
+          <div class="step-detail">
+            <span style="color:#6a9955;">CONFIG_SQUASHFS_FIXED_KEY=</span><span class="key">"\x3F\x8C\x14\xB2\x7D\xA3\x59\xE1\x06\xCC\x4A\x91\xF8\x22\x6B\xD7"</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="discovery">
+      <div class="discovery-text">
+        The encryption key is <strong>baked into the kernel image</strong>. Anyone with the firmware has it.
+        The rootfs was never truly secret - just obscured.
       </div>
     </div>
-    <p class="soft" style="margin-top: 40px;">There's a custom SquashFS encryption implementation &mdash; and the key is right there in the code.</p>
+
     <div class="slide-number">14</div>
   </div>
 </body>
