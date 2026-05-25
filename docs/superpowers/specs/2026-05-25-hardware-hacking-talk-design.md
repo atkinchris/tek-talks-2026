@@ -25,15 +25,15 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 
 Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minutes for Q&A. The extra time over the original 30-minute budget gives each section room to breathe - particularly the asides.
 
-| Section | Time | Approx slides |
-|---|---|---|
-| Opening - childhood curiosity | 3 min | 2-3 |
-| Ground rules | 1 min | 1 |
-| Device 1 - the cheap console | 13 min | 8-12 |
-| Device 2 - the expensive console | 10 min | 6-8 |
-| Device 3 - the signed console | 10 min | 8-10 |
-| Close - security trade-offs | 3 min | 2-3 |
-| **Total** | **~40 min** | **27-37** |
+| Section                          | Time        | Approx slides |
+| -------------------------------- | ----------- | ------------- |
+| Opening - childhood curiosity    | 3 min       | 2-3           |
+| Ground rules                     | 1 min       | 1             |
+| Device 1 - the cheap console     | 13 min      | 8-12          |
+| Device 2 - the expensive console | 10 min      | 6-8           |
+| Device 3 - the signed console    | 10 min      | 8-10          |
+| Close - security trade-offs      | 3 min       | 2-3           |
+| **Total**                        | **~40 min** | **27-37**     |
 
 ## Section details
 
@@ -55,53 +55,64 @@ Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minute
 ### Device 1: The cheap console (10 min)
 
 **Meet the device (1 min):**
+
 - Photo of the device. Cheap handheld, preloaded with games, runs Linux.
 - Brief mention of DFU mode - a recovery mode that already tells us something.
 
 **Recon and disassembly (1 min):**
+
 - How you approach a new device: what can we learn from the outside? Open it up.
 - Photo of the PCB. "I spotted something interesting..."
 
 **Aside - UART (2.5 min):**
+
 - What is UART: a simple serial communication protocol, two wires for sending and receiving.
 - How to spot it on a PCB: visual guide using the real photo, annotating the pins.
 - Why it exists: manufacturers use it for debugging during development, often leave pads on production boards.
 - High level how it works: baud rate, TX/RX, cheap USB adapter.
 
 **Apply it (1.5 min):**
+
 - Connect UART, get a U-Boot shell. Static terminal output on slide.
 - Confirm it's Linux. Dump the firmware - surface to explore and safety net for rollback.
 - DFU/maskrom mode means bricking is very hard if you have the MMC image.
 
 **Aside - reverse engineering, Binwalk, and entropy (3 min):**
+
 - Compiled code becomes assembly in binaries. Tools like Ghidra can disassemble binaries to understand original code.
 - Binwalk: analyses binary files, identifies what's inside (filesystems, kernels, compressed data).
 - Entropy: visual concept. Low entropy means readable/structured data, high entropy means compressed or encrypted. Clear visual diagram.
 - Apply Binwalk to the firmware: rootfs is encrypted (high entropy). But we can extract the kernel from the boot partition.
 
 **Apply it - Ghidra (1.5 min):**
+
 - Compare extracted kernel against a known Linux kernel in Ghidra.
 - Find the differences: custom SquashFS encryption implementation, and the key baked into the code.
 
 **The win (0.5 min):**
+
 - "We have the key." Decrypt and repack the rootfs. First lock picked.
 - How could they have done better? A secure element to store the key - but that costs money per unit on a cheap device. Trade-off.
 
 ### Device 2: The expensive console (8 min)
 
 **Meet the device (0.5 min):**
+
 - Photo. Same manufacturer, more expensive. Hardware encryption - key in secure registers, not in the firmware.
 
 **Recon (1 min):**
+
 - Same approach: dump firmware, Binwalk. Encrypted rootfs, but no key in the kernel.
 - Key is read from secure registers at runtime. We need to run code on the device to extract it.
 
 **Aside - exception levels (2.5 min):**
+
 - Visual explanation of processor privilege levels as layers. User-land processes run at a lower privilege level and cannot access secure hardware registers.
 - The kernel runs at a higher privilege level and can access everything beneath it. Secure registers are only accessible from the kernel layer.
 - This is why we cannot just write a normal program to read the key. We need kernel-level access.
 
 **The approach (1.5 min):**
+
 - No boot chain verification, so we can tamper with the kernel on disk.
 - Could we patch passwd and Linux's privilege system to get root? Too complex - Linux's access controls are battle-tested and spread across too many places.
 - But the manufacturer's custom code-signing implementation is hastily added on top. Patch that out instead - much simpler target.
@@ -109,20 +120,24 @@ Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minute
 - Recon the firmware for attack surface: find an old kernel version with a known CVE that allows privilege escalation.
 
 **Apply it (1.5 min):**
+
 - Exploit the CVE to escalate from user level to kernel level at runtime.
 - Load a custom kernel module (now permitted, since we patched out signing) that reads the key from secure registers.
 
 **The win (1 min):**
+
 - Second lock picked.
 - How could they have done better? Keep the kernel updated, and verify the boot chain so tampering with the kernel on disk is not possible. Trade-off: updates cost development time and testing.
 
 ### Device 3: The signed console (7 min)
 
 **Meet the device (0.5 min):**
+
 - Photo. Different console, same manufacturer, same hardware as device 2.
 - "This time, they've done what we said they should - there's a proper signed bootloader chain."
 
 **Aside - signed bootloader chains (2.5 min):**
+
 - Visual chain of trust: ROM verifies bootloader, bootloader verifies kernel, kernel verifies rootfs.
 - Asymmetric cryptography at a high level: the manufacturer signs firmware with a private key that never leaves their build system - it is nowhere on the device, not even in hardware.
 - The public key is burned into an eFuse on the chip - written once at the factory, physically cannot be overwritten. The device uses this to verify signatures.
@@ -130,12 +145,15 @@ Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minute
 - "We can't tamper with the kernel on disk any more. The boot chain catches it."
 
 **The wall (0.5 min):**
+
 - Previous approach is blocked. We need to find something that happens outside the signed chain.
 
 **Recon (0.5 min):**
+
 - Look at what is not covered by signing. Splash logos - branding images loaded during boot. Processed by the bootloader but not part of the signed chain.
 
 **Aside - fuzzing (3 min):**
+
 - Brief explanation of how a processor executes code: instructions are stored in memory, and the processor has a program counter (PC) that points to the current instruction. It reads the instruction, executes it, moves to the next one. Your program is just a sequence of instructions sitting in memory.
 - Brief explanation of a buffer overflow: software allocates a fixed amount of memory for input, but if the input is larger than expected, it spills over into adjacent memory. That adjacent memory might contain instructions the processor is about to execute - so by controlling the overflow, you control what the processor does next.
 - What is fuzzing: throwing enormous amounts of random or semi-random input at software to find crashes or hangs - because a crash or hang means the software did something unexpected, and unexpected behaviour is exploitable.
@@ -143,16 +161,19 @@ Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minute
 - "We pointed AFL at the bootloader's splash logo parser."
 
 **Apply it - TOCTOU (1 min):**
+
 - Found a buffer overflow in the logo parser.
 - Overwrite instructions after the bootloader chain has been verified, but before the verified code executes. A time-of-check to time-of-use (TOCTOU) attack.
 - Brief visual: the chain checks everything, says "all good", then we rewrite what it just approved before it runs.
 
 **The win (0.5 min):**
+
 - Third lock picked. Run unsigned code, extract key from secure registers.
 
 ### Close (2 min)
 
 **Security is a trade-off against risk (1.5 min):**
+
 - These manufacturers sell hundreds of thousands of units. Only a handful of people are doing what we just walked through.
 - Device 1: a secure element costs real money per unit, multiplied across hundreds of thousands of devices, to protect against a few hobbyists. Not a good trade.
 - Device 2: development cost of keeping the kernel patched and verifying the boot chain outweighs the risk from a few curious people.
@@ -160,6 +181,7 @@ Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minute
 - "They didn't get more secure because they got smarter. They got more secure because the risk justified the cost."
 
 **Cat and mouse (0.5 min):**
+
 - The arms race continues, driven by economics as much as technology.
 - End clean. No closing slide - take questions verbally.
 
