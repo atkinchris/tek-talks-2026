@@ -23,15 +23,17 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 
 ## Talk structure and timing
 
+Total slot is 1 hour. Target approximately 40 minutes of talk, leaving 20 minutes for Q&A. The extra time over the original 30-minute budget gives each section room to breathe - particularly the asides.
+
 | Section | Time | Approx slides |
 |---|---|---|
-| Opening - childhood curiosity | 2 min | 2-3 |
+| Opening - childhood curiosity | 3 min | 2-3 |
 | Ground rules | 1 min | 1 |
-| Device 1 - the cheap console | 10 min | 8-12 |
-| Device 2 - the expensive console | 8 min | 6-8 |
-| Device 3 - the signed console | 7 min | 6-8 |
-| Close - security trade-offs | 2 min | 2-3 |
-| **Total** | **30 min** | **25-35** |
+| Device 1 - the cheap console | 13 min | 8-12 |
+| Device 2 - the expensive console | 10 min | 6-8 |
+| Device 3 - the signed console | 10 min | 8-10 |
+| Close - security trade-offs | 3 min | 2-3 |
+| **Total** | **~40 min** | **27-37** |
 
 ## Section details
 
@@ -133,9 +135,10 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 **Recon (0.5 min):**
 - Look at what is not covered by signing. Splash logos - branding images loaded during boot. Processed by the bootloader but not part of the signed chain.
 
-**Aside - fuzzing (2 min):**
-- What is fuzzing: throwing enormous amounts of random or semi-random input at software to find crashes or hangs - because a crash or hang means the software did something unexpected, and unexpected behaviour is exploitable.
+**Aside - fuzzing (3 min):**
+- Brief explanation of how a processor executes code: instructions are stored in memory, and the processor has a program counter (PC) that points to the current instruction. It reads the instruction, executes it, moves to the next one. Your program is just a sequence of instructions sitting in memory.
 - Brief explanation of a buffer overflow: software allocates a fixed amount of memory for input, but if the input is larger than expected, it spills over into adjacent memory. That adjacent memory might contain instructions the processor is about to execute - so by controlling the overflow, you control what the processor does next.
+- What is fuzzing: throwing enormous amounts of random or semi-random input at software to find crashes or hangs - because a crash or hang means the software did something unexpected, and unexpected behaviour is exploitable.
 - AFL (American Fuzzy Lop): does fuzzing intelligently - mutates inputs, tracks which code paths they exercise, steers towards unexplored territory.
 - "We pointed AFL at the bootloader's splash logo parser."
 
