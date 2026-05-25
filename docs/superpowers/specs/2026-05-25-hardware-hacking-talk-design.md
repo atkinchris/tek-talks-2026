@@ -95,8 +95,8 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 - Key is read from secure registers at runtime. We need to run code on the device to extract it.
 
 **Aside - exception levels (2.5 min):**
-- Visual explanation of processor privilege levels. User-land processes cannot access secure hardware registers.
-- Analogy: floors in a building. Your app runs on the ground floor, the kernel runs upstairs, secure registers are in the vault in the basement. You need to be the kernel to reach the vault.
+- Visual explanation of processor privilege levels as layers. User-land processes run at a lower privilege level and cannot access secure hardware registers.
+- The kernel runs at a higher privilege level and can access everything beneath it. Secure registers are only accessible from the kernel layer.
 - This is why we cannot just write a normal program to read the key. We need kernel-level access.
 
 **The approach (1.5 min):**
