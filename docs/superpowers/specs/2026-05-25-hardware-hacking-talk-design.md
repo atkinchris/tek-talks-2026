@@ -122,7 +122,8 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 
 **Aside - signed bootloader chains (2.5 min):**
 - Visual chain of trust: ROM verifies bootloader, bootloader verifies kernel, kernel verifies rootfs.
-- Asymmetric cryptography at a high level: manufacturer has a private key, device has the public key. Bootloader is signed with the private key, device checks the signature with the public key.
+- Asymmetric cryptography at a high level: the manufacturer signs firmware with a private key that never leaves their build system - it is nowhere on the device, not even in hardware.
+- The public key is burned into an eFuse on the chip - written once at the factory, physically cannot be overwritten. The device uses this to verify signatures.
 - Walk through the chain visually. If any link fails verification, the device refuses to boot.
 - "We can't tamper with the kernel on disk any more. The boot chain catches it."
 
