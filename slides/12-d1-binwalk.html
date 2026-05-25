@@ -7,7 +7,8 @@
 <body>
   <div class="slide" style="align-items: flex-start;">
     <div class="slide-label">Binwalk</div>
-    <h2 style="margin-bottom: 48px;">What's inside the firmware?</h2>
+    <h2 style="margin-bottom: 16px;">binwalk tells us what it can read - and what it can't</h2>
+    <p class="soft" style="margin-bottom: 40px; font-size: 30px;">Scan the binary blob and it identifies known signatures. The rootfs is a problem.</p>
     <div class="terminal">
       <span class="prompt">$ </span>binwalk firmware.bin<br>
       <br>
@@ -17,7 +18,7 @@
       <span class="hi">64         0x40           Linux kernel ARM boot image</span><br>
       2097152    0x200000       <span style="color: #f48771;">High entropy data (encrypted?)</span><br>
     </div>
-    <p class="soft" style="margin-top: 36px;">The kernel is readable. The rootfs is not.</p>
+    <p class="soft" style="margin-top: 36px;">The kernel is readable. The rootfs - where all the interesting application code lives - is not.</p>
     <div class="slide-number">12</div>
   </div>
 </body>
