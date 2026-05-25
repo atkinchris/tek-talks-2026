@@ -14,7 +14,7 @@ async function main() {
 
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  await page.setViewport({ width: 1920, height: 1080 })
+  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 })
 
   for (const file of files) {
     const filePath = path.join(slidesDir, file)
