@@ -10,14 +10,6 @@
       padding: 40px 48px;
       box-shadow: inset 0 0 0 3px #3d7a34, 0 4px 24px rgba(0,0,0,0.15);
     }
-    .pcb-label {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 16px;
-    }
     .uart-header {
       display: flex;
       flex-direction: column;
@@ -70,48 +62,23 @@
 <body>
   <div class="slide" style="align-items: flex-start;">
     <div class="slide-label">UART</div>
-    <h2 style="margin-bottom: 48px;">Spotting UART on a PCB.</h2>
+    <h2 style="margin-bottom: 8px;">A serial debug port,<br>left behind by the manufacturer.</h2>
+    <p style="font-size: 28px; color: var(--text-soft); margin-bottom: 32px; letter-spacing: 0.02em;">Universal Asynchronous Receiver-Transmitter</p>
     <div style="display: flex; gap: 64px; width: 100%; align-items: flex-start;">
-      <div style="display: flex; gap: 48px;">
-        <div>
-          <p class="pcb-label">3-pin (common)</p>
-          <div class="pcb">
-            <div class="uart-header">
-              <div class="uart-pin">
-                <div class="pin-pad soldered"></div>
-                <span class="pin-label">TX</span>
-              </div>
-              <div class="uart-pin">
-                <div class="pin-pad soldered"></div>
-                <span class="pin-label">RX</span>
-              </div>
-              <div class="uart-pin">
-                <div class="pin-pad soldered square"></div>
-                <span class="pin-label">GND</span>
-              </div>
+      <div>
+        <div class="pcb">
+          <div class="uart-header">
+            <div class="uart-pin">
+              <div class="pin-pad soldered"></div>
+              <span class="pin-label">TX</span>
             </div>
-          </div>
-        </div>
-        <div>
-          <p class="pcb-label">4-pin (with VCC)</p>
-          <div class="pcb">
-            <div class="uart-header">
-              <div class="uart-pin">
-                <div class="pin-pad"></div>
-                <span class="pin-label">VCC</span>
-              </div>
-              <div class="uart-pin">
-                <div class="pin-pad soldered"></div>
-                <span class="pin-label">TX</span>
-              </div>
-              <div class="uart-pin">
-                <div class="pin-pad soldered"></div>
-                <span class="pin-label">RX</span>
-              </div>
-              <div class="uart-pin">
-                <div class="pin-pad soldered square"></div>
-                <span class="pin-label">GND</span>
-              </div>
+            <div class="uart-pin">
+              <div class="pin-pad soldered"></div>
+              <span class="pin-label">RX</span>
+            </div>
+            <div class="uart-pin">
+              <div class="pin-pad soldered square"></div>
+              <span class="pin-label">GND</span>
             </div>
           </div>
         </div>
@@ -131,16 +98,11 @@
             <div class="pin-desc-label" style="color: var(--text-soft);">GND</div>
             <div class="pin-desc-text">Ground &mdash; shared reference voltage</div>
           </div>
-          <div class="pin-desc">
-            <div class="pin-desc-label" style="color: var(--text-soft);">VCC</div>
-            <div class="pin-desc-text">Power &mdash; usually not needed</div>
-          </div>
         </div>
-        <p class="soft" style="margin-top: 32px; font-size: 30px;">One pad is usually square &mdash; that's GND, and helps you orient the pins.</p>
-        <p class="soft" style="margin-top: 20px; font-size: 28px;"><strong style="color: var(--text);">Tip:</strong> not sure which pin is which? Use a logic analyser to listen. Not got one? A multimeter will do &mdash; watch for voltage fluctuations on each pad.</p>
       </div>
     </div>
     <div class="slide-number">07</div>
+    <p style="position: absolute; bottom: 40px; left: 120px; font-size: 22px; color: var(--text-soft);">The square pad is usually GND. Not sure which pin is which? A multimeter will show voltage fluctuations on active pads.</p>
   </div>
 </body>
 </html>
