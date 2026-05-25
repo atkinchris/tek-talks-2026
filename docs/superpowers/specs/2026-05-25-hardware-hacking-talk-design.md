@@ -100,8 +100,10 @@ Each device is a lock to pick, with escalating difficulty. Educational asides ar
 - This is why we cannot just write a normal program to read the key. We need kernel-level access.
 
 **The approach (1.5 min):**
-- No boot chain verification, so we can tamper with the kernel on disk. Patch out the kernel's code-signing checks so it will accept unsigned modules.
-- But we still only have user-level access at runtime. Things like the passwd file are in the encrypted rootfs, so we cannot just log in as root.
+- No boot chain verification, so we can tamper with the kernel on disk.
+- Could we patch passwd and Linux's privilege system to get root? Too complex - Linux's access controls are battle-tested and spread across too many places.
+- But the manufacturer's custom code-signing implementation is hastily added on top. Patch that out instead - much simpler target.
+- We can now load unsigned kernel modules, but still only have user-level access at runtime. Need privilege escalation.
 - Recon the firmware for attack surface: find an old kernel version with a known CVE that allows privilege escalation.
 
 **Apply it (1.5 min):**
