@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+  <style>
+    .memory-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 12px;
+    }
+    .mem-addr { font-family: var(--font-mono); font-size: 26px; color: var(--text-soft); width: 120px; flex-shrink: 0; }
+    .mem-cell { font-family: var(--font-mono); font-size: 26px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 6px; padding: 10px 20px; flex: 1; }
+    .mem-cell.active { background: #eff6ff; border-color: var(--accent-blue); color: var(--accent-blue); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">How code executes</div>
+    <h2 style="margin-bottom: 40px;">Instructions are just bytes in memory.</h2>
+    <div style="display: flex; gap: 80px; width: 100%; align-items: flex-start;">
+      <div style="flex: 1;">
+        <div class="memory-row">
+          <div class="mem-addr">0x1000</div>
+          <div class="mem-cell active">MOV R0, #1 &nbsp;&nbsp;&nbsp;&nbsp; &lt;-- PC</div>
+        </div>
+        <div class="memory-row">
+          <div class="mem-addr">0x1004</div>
+          <div class="mem-cell">ADD R1, R0, R1</div>
+        </div>
+        <div class="memory-row">
+          <div class="mem-addr">0x1008</div>
+          <div class="mem-cell">STR R1, [R2]</div>
+        </div>
+        <div class="memory-row">
+          <div class="mem-addr">0x100C</div>
+          <div class="mem-cell">BX LR</div>
+        </div>
+      </div>
+      <div style="flex: 1;">
+        <div class="box box-blue">
+          <h3 class="blue" style="margin-bottom: 16px;">Program Counter (PC)</h3>
+          <p>Points to the current instruction. After each instruction, it moves to the next address. Your program is just the PC walking through memory.</p>
+        </div>
+        <p class="soft" style="margin-top: 32px; font-size: 34px;">Control what the PC points to &mdash; control what the processor does.</p>
+      </div>
+    </div>
+    <div class="slide-number">26</div>
+  </div>
+</body>
+</html>

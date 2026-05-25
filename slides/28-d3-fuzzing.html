@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Fuzzing</div>
+    <h2 style="margin-bottom: 48px;">Throw enough at it. Something will break.</h2>
+    <div style="display: flex; gap: 40px; width: 100%;">
+      <div class="box" style="flex: 1;">
+        <h3 style="margin-bottom: 16px;">What we're looking for</h3>
+        <p>A crash or a hang &mdash; because that means the software did something <em>unexpected</em>, and unexpected behaviour is exploitable.</p>
+      </div>
+      <div class="box box-blue" style="flex: 1;">
+        <h3 class="blue" style="margin-bottom: 16px;">AFL</h3>
+        <p>American Fuzzy Lop. Mutates inputs, tracks which code paths they hit, and steers towards unexplored territory.</p>
+      </div>
+    </div>
+    <p class="soft" style="margin-top: 40px; font-size: 40px; font-style: italic;">We pointed AFL at the bootloader's splash logo parser.</p>
+    <div class="slide-number">28</div>
+  </div>
+</body>
+</html>

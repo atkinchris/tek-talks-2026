@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+  <style>
+    .mem-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    .mem-box {
+      height: 64px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 600;
+      border: 2px solid;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Buffer overflow</div>
+    <h2 style="margin-bottom: 40px;">Spill into the instructions.</h2>
+    <div style="display: flex; gap: 80px; width: 100%;">
+      <div style="flex: 1;">
+        <p style="font-size: 26px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; margin-bottom: 16px;">Normal</p>
+        <div class="mem-row">
+          <div class="mem-box" style="flex: 3; background: #eff6ff; border-color: var(--accent-blue); color: var(--accent-blue);">"hello"</div>
+          <div class="mem-box" style="flex: 1; background: var(--bg-soft); border-color: var(--border); color: var(--text-soft);">empty</div>
+          <div class="mem-box" style="flex: 2; background: #f0fdf4; border-color: var(--accent-green); color: var(--accent-green);">instruction</div>
+        </div>
+        <p style="font-size: 28px; color: var(--text-soft); margin-top: 8px;">Buffer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Padding &nbsp;&nbsp;&nbsp; Code</p>
+      </div>
+      <div style="flex: 1;">
+        <p style="font-size: 26px; font-weight: 600; color: var(--accent-red); text-transform: uppercase; margin-bottom: 16px;">Overflow</p>
+        <div class="mem-row">
+          <div class="mem-box" style="flex: 3; background: #fef2f2; border-color: var(--accent-red); color: var(--accent-red);">"AAAAAAA..."</div>
+          <div class="mem-box" style="flex: 1; background: #fef2f2; border-color: var(--accent-red); color: var(--accent-red);">AAAA</div>
+          <div class="mem-box" style="flex: 2; background: #fef2f2; border-color: var(--accent-red); color: var(--accent-red);">our code!</div>
+        </div>
+        <p style="font-size: 28px; color: var(--accent-red); margin-top: 8px;">Overflowed input overwrites the instruction</p>
+      </div>
+    </div>
+    <p class="soft" style="margin-top: 40px; max-width: 1400px;">If the software doesn't check the size of the input before writing it to memory, we can spill past the buffer and overwrite the instructions the processor is about to execute.</p>
+    <div class="slide-number">27</div>
+  </div>
+</body>
+</html>
