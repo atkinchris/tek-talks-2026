@@ -12,8 +12,8 @@ npm install
 
 ## Scripts
 
-| Command | What it does |
-|---|---|
+| Command              | What it does                                            |
+| -------------------- | ------------------------------------------------------- |
 | `npm run screenshot` | Exports each HTML slide to a 3840x2160 PNG in `output/` |
-| `npm run pptx` | Assembles the PNGs into `output/slides.pptx` |
-| `npm run build` | Runs both in sequence |
+| `npm run pptx`       | Assembles the PNGs into `output/slides.pptx`            |
+| `npm run build`      | Runs both in sequence                                   |
