@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+  <style>
+    .annotation {
+      position: absolute;
+      background: var(--accent-blue);
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      padding: 8px 20px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .annotation::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 24px;
+      border: 6px solid transparent;
+      border-top-color: var(--accent-blue);
+    }
+  </style>
+</head>
+<body>
+  <div class="slide slide-photo">
+    <img src="assets/device-1-pcb.jpg" alt="PCB with UART pins highlighted">
+    <!-- Adjust top/left percentages to position the labels over the actual pins in your photo -->
+    <div class="annotation" style="top: 32%; left: 38%;">TX</div>
+    <div class="annotation" style="top: 38%; left: 38%;">RX</div>
+    <div class="annotation" style="top: 44%; left: 38%;">GND</div>
+    <div class="overlay">
+      <h2>There are the UART pins.</h2>
+    </div>
+    <div class="slide-number" style="color: rgba(255,255,255,0.5);">08</div>
+  </div>
+</body>
+</html>
