@@ -3,28 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="shared/style.css">
+  <style>
+    .re-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 0 8px;
+    }
+    .re-arrow .arrow { font-size: 48px; color: var(--text-soft); line-height: 1; }
+    .re-arrow .arrow-label { font-size: 20px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  </style>
 </head>
 <body>
   <div class="slide" style="align-items: flex-start;">
     <div class="slide-label">Reverse engineering</div>
-    <h2 style="margin-bottom: 48px;">Code you can't read.</h2>
-    <div style="display: flex; align-items: center; gap: 32px; width: 100%;">
-      <div class="box box-blue" style="flex: 1; text-align: center;">
-        <h3 class="blue">Source code</h3>
-        <p style="margin-top: 12px; font-size: 30px;">What the developer wrote</p>
+    <h2 style="margin-bottom: 36px;">Undoing the compiler.</h2>
+    <div style="display: flex; gap: 0; width: 100%; align-items: stretch;">
+      <!-- Source code -->
+      <div style="flex: 1; display: flex; flex-direction: column;">
+        <p class="blue" style="font-size: 24px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Source code</p>
+        <div class="terminal" style="font-size: 22px; line-height: 1.65; padding: 28px 32px; flex: 1;">
+          <span class="comment">// what the developer wrote</span><br>
+          <span style="color: #569cd6;">int</span> <span style="color: #dcdcaa;">check_key</span>(<span style="color: #569cd6;">u8</span> *input) {<br>
+          &nbsp;&nbsp;<span style="color: #c586c0;">if</span> (<span style="color: #dcdcaa;">memcmp</span>(input, secret, <span style="color: #b5cea8;">16</span>) == <span style="color: #b5cea8;">0</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #c586c0;">return</span> <span style="color: #b5cea8;">1</span>;<br>
+          &nbsp;&nbsp;<span style="color: #c586c0;">return</span> <span style="color: #b5cea8;">0</span>;<br>
+          }
+        </div>
       </div>
-      <div style="font-size: 56px; color: var(--text-soft);">&#8594;</div>
-      <div class="box" style="flex: 1; text-align: center;">
-        <h3>Compiled binary</h3>
-        <p style="margin-top: 12px; font-size: 30px;">What ships on the device</p>
+
+      <div class="re-arrow" style="align-self: center;">
+        <span class="arrow-label">compile</span>
+        <span class="arrow">&#8594;</span>
       </div>
-      <div style="font-size: 56px; color: var(--text-soft);">&#8594;</div>
-      <div class="box box-green" style="flex: 1; text-align: center;">
-        <h3 class="green">Disassembly</h3>
-        <p style="margin-top: 12px; font-size: 30px;">What Ghidra shows us</p>
+
+      <!-- Compiled binary -->
+      <div style="flex: 1; display: flex; flex-direction: column;">
+        <p style="font-size: 24px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; color: var(--text-soft);">Compiled binary</p>
+        <div class="terminal" style="font-size: 22px; line-height: 1.65; padding: 28px 32px; color: #666; flex: 1;">
+          <span style="color: #555;">00000:</span> e9 2d 40 00 e2 8d d0 04<br>
+          <span style="color: #555;">00008:</span> e5 9f 30 1c e1 a0 10 00<br>
+          <span style="color: #555;">00010:</span> e3 a0 20 10 eb 00 03 a2<br>
+          <span style="color: #555;">00018:</span> e3 50 00 00 13 a0 00 00<br>
+          <span style="color: #555;">00020:</span> 03 a0 00 01 e8 bd 80 00<br>
+          <span style="color: #555;">00028:</span> 00 00 a4 c0 00 00 00 00
+        </div>
+      </div>
+
+      <div class="re-arrow" style="align-self: center;">
+        <span class="arrow-label">disassemble</span>
+        <span class="arrow">&#8594;</span>
+      </div>
+
+      <!-- Disassembly -->
+      <div style="flex: 1; display: flex; flex-direction: column;">
+        <p class="green" style="font-size: 24px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Disassembly</p>
+        <div class="terminal" style="font-size: 22px; line-height: 1.65; padding: 28px 32px; flex: 1;">
+          <span class="comment">; what Ghidra shows us</span><br>
+          <span class="hi">check_key</span>:<br>
+          &nbsp;&nbsp;push&nbsp;&nbsp;&nbsp; {lr}<br>
+          &nbsp;&nbsp;ldr&nbsp;&nbsp;&nbsp;&nbsp; r3, =<span class="hi">secret</span><br>
+          &nbsp;&nbsp;mov&nbsp;&nbsp;&nbsp;&nbsp; r2, #<span style="color: #b5cea8;">0x10</span><br>
+          &nbsp;&nbsp;bl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="hi">memcmp</span><br>
+          &nbsp;&nbsp;cmp&nbsp;&nbsp;&nbsp;&nbsp; r0, #<span style="color: #b5cea8;">0</span><br>
+          &nbsp;&nbsp;moveq&nbsp;&nbsp; r0, #<span style="color: #b5cea8;">1</span><br>
+          &nbsp;&nbsp;pop&nbsp;&nbsp;&nbsp;&nbsp; {pc}
+        </div>
       </div>
     </div>
-    <p class="soft" style="margin-top: 48px; font-size: 36px;">We don't get the source back exactly &mdash; but we get enough to understand what the code is doing.</p>
+    <p class="soft" style="margin-top: 36px; font-size: 34px;">We don't get the source back exactly &mdash; but we get enough to understand what the code is doing.</p>
     <div class="slide-number">12</div>
   </div>
 </body>
