@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Ghidra</div>
+    <h2 style="margin-bottom: 40px;">Compare our kernel to a known Linux kernel.</h2>
+    <div style="display: flex; gap: 40px; width: 100%; align-items: flex-start;">
+      <div style="flex: 1;">
+        <p style="font-size: 28px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;">Known Linux kernel</p>
+        <div class="terminal" style="font-size: 24px;">
+          squashfs_decompress(<br>
+          &nbsp;&nbsp;const void *in,<br>
+          &nbsp;&nbsp;void *out,<br>
+          &nbsp;&nbsp;int inlen<br>
+          ) { ... }
+        </div>
+      </div>
+      <div style="font-size: 56px; color: var(--accent-red); align-self: center; flex-shrink: 0;">!=</div>
+      <div style="flex: 1;">
+        <p style="font-size: 28px; font-weight: 600; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;">This kernel (custom)</p>
+        <div class="terminal" style="font-size: 24px;">
+          squashfs_decompress(<br>
+          &nbsp;&nbsp;const void *in,<br>
+          &nbsp;&nbsp;void *out,<br>
+          &nbsp;&nbsp;int inlen,<br>
+          &nbsp;&nbsp;<span class="hi">const u8 *key</span><br>
+          ) { ... }
+        </div>
+      </div>
+    </div>
+    <p class="soft" style="margin-top: 40px;">There's a custom SquashFS encryption implementation &mdash; and the key is right there in the code.</p>
+    <div class="slide-number">14</div>
+  </div>
+</body>
+</html>

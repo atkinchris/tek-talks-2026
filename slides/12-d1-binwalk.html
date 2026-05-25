@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Binwalk</div>
+    <h2 style="margin-bottom: 48px;">What's inside the firmware?</h2>
+    <div class="terminal">
+      <span class="prompt">$ </span>binwalk firmware.bin<br>
+      <br>
+      DECIMAL    HEXADECIMAL    DESCRIPTION<br>
+      --------   -----------    --------------------------------<br>
+      <span class="hi">0          0x0            uImage header, OS: Linux, ...</span><br>
+      <span class="hi">64         0x40           Linux kernel ARM boot image</span><br>
+      2097152    0x200000       <span style="color: #f48771;">High entropy data (encrypted?)</span><br>
+    </div>
+    <p class="soft" style="margin-top: 36px;">The kernel is readable. The rootfs is not.</p>
+    <div class="slide-number">12</div>
+  </div>
+</body>
+</html>
