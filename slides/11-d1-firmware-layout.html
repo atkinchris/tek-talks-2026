@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+  <style>
+    .partition-bar {
+      display: flex;
+      width: 100%;
+      height: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 3px solid var(--border);
+      margin-bottom: 48px;
+    }
+    .partition {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.03em;
+    }
+    .partition.bootloader {
+      flex: 1;
+      background: var(--accent-blue);
+    }
+    .partition.kernel {
+      flex: 1.5;
+      background: var(--accent-red);
+    }
+    .partition.rootfs {
+      flex: 5;
+      background: var(--accent-green);
+    }
+    .partition-desc {
+      display: flex;
+      gap: 64px;
+    }
+    .partition-item {
+      flex: 1;
+    }
+    .partition-item h3 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .partition-item p {
+      font-size: 28px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+    .dot {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+    .dot.blue { background: var(--accent-blue); }
+    .dot.red { background: var(--accent-red); }
+    .dot.green { background: var(--accent-green); }
+  </style>
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Firmware</div>
+    <h2 style="margin-bottom: 48px;">What's inside a firmware image?</h2>
+    <div class="partition-bar">
+      <div class="partition bootloader">Bootloader</div>
+      <div class="partition kernel">Kernel</div>
+      <div class="partition rootfs">Root filesystem</div>
+    </div>
+    <div class="partition-desc">
+      <div class="partition-item">
+        <h3><span class="dot blue"></span>Bootloader</h3>
+        <p>Runs first. Initialises the hardware, then loads the kernel. On this device, it's U-Boot.</p>
+      </div>
+      <div class="partition-item">
+        <h3><span class="dot red"></span>Kernel</h3>
+        <p>The operating system core. Manages memory, processes, and device drivers.</p>
+      </div>
+      <div class="partition-item">
+        <h3><span class="dot green"></span>Root filesystem</h3>
+        <p>Everything else &mdash; the applications, config files, and games. Usually the largest partition.</p>
+      </div>
+    </div>
+    <p class="soft" style="margin-top: 48px; font-size: 32px;">The firmware dump is all of these concatenated into one binary blob. We need to pull them apart.</p>
+    <div class="slide-number">11</div>
+  </div>
+</body>
+</html>
