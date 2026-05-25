@@ -3,22 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="shared/style.css">
+  <style>
+    .images {
+      display: flex;
+      width: 100%;
+      gap: 48px;
+      margin: 48px 0 24px;
+    }
+
+    .image-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .image-bar {
+      height: 120px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .bar-kernel { background: #2563eb; }
+    .bar-rootfs { background: #374151; }
+
+    .label-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .label-name {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .label-desc {
+      font-size: 24px;
+      color: var(--text-soft);
+    }
+
+    .label-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .tag-readable   { background: #dbeafe; color: #1d4ed8; }
+    .tag-unreadable { background: #fef2f2; color: #dc2626; }
+  </style>
 </head>
 <body>
   <div class="slide" style="align-items: flex-start;">
     <div class="slide-label">Binwalk</div>
-    <h2 style="margin-bottom: 16px;">binwalk tells us what it can read - and what it can't</h2>
-    <p class="soft" style="margin-bottom: 40px; font-size: 30px;">Scan the binary blob and it identifies known signatures. The rootfs is a problem.</p>
-    <div class="terminal">
-      <span class="prompt">$ </span>binwalk firmware.bin<br>
-      <br>
-      DECIMAL    HEXADECIMAL    DESCRIPTION<br>
-      --------   -----------    --------------------------------<br>
-      <span class="hi">0          0x0            uImage header, OS: Linux, ...</span><br>
-      <span class="hi">64         0x40           Linux kernel ARM boot image</span><br>
-      2097152    0x200000       <span style="color: #f48771;">High entropy data (encrypted?)</span><br>
+    <h2><code style="font-family: var(--font-mono); font-size: 0.9em;">binwalk</code> shows us the likely contents of a binary image</h2>
+    <p class="soft" style="font-size: 30px; margin-top: 16px;">Scans for known signatures - it tells us what it recognises, and what it can't explain.</p>
+
+    <div class="images">
+      <div class="image-block">
+        <div class="image-bar bar-kernel">boot.img</div>
+        <div class="label-block">
+          <div class="label-name">Kernel</div>
+          <div class="label-desc">Version string, AES tables, ELF objects - all identifiable</div>
+          <span class="label-tag tag-readable">Readable</span>
+        </div>
+      </div>
+      <div class="image-block">
+        <div class="image-bar bar-rootfs">rootfs.img</div>
+        <div class="label-block">
+          <div class="label-name">Root filesystem</div>
+          <div class="label-desc">High entropy - compressed, encrypted, or both</div>
+          <span class="label-tag tag-unreadable">Opaque</span>
+        </div>
+      </div>
     </div>
-    <p class="soft" style="margin-top: 36px;">The kernel is readable. The rootfs - where all the interesting application code lives - is not.</p>
+
     <div class="slide-number">12</div>
   </div>
 </body>
