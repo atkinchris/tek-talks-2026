@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "giving-presentations": {
+      "source": "refoundai/lenny-skills",
+      "sourceType": "github",
+      "skillPath": "skills/giving-presentations/SKILL.md",
+      "computedHash": "cca5aede5d8f96d8823ec6d7264d613ce6b0b6f055a7d011c8b706218fbdf629"
+    }
+  }
+}
