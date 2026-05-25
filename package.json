@@ -1,0 +1,10 @@
+{
+  "name": "tek-talks-2026",
+  "version": "1.0.0",
+  "scripts": {
+    "screenshot": "node screenshot.js"
+  },
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}
