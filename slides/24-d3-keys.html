@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start;">
+    <div class="slide-label">Signed bootloader chain</div>
+    <h2 style="margin-bottom: 48px;">The private key is nowhere on the device.</h2>
+    <div style="display: flex; gap: 40px; width: 100%;">
+      <div class="box box-red" style="flex: 1;">
+        <h3 class="red" style="margin-bottom: 16px;">Private key</h3>
+        <p>Stays in the manufacturer's build system. Never shipped. Signs every firmware release.</p>
+      </div>
+      <div class="box box-blue" style="flex: 1;">
+        <h3 class="blue" style="margin-bottom: 16px;">Public key</h3>
+        <p>Burned into an eFuse on the chip at the factory. Written once &mdash; physically impossible to overwrite. Used to verify signatures.</p>
+      </div>
+    </div>
+    <p class="soft" style="margin-top: 40px;">There's nothing to extract. The key that matters never exists on the device.</p>
+    <div class="slide-number">24</div>
+  </div>
+</body>
+</html>

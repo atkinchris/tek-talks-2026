@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+  <div class="slide" style="align-items: flex-start; justify-content: center;">
+    <div class="slide-label">The wall</div>
+    <h2 style="margin-bottom: 48px;">Our previous approach is blocked.</h2>
+    <div style="display: flex; gap: 40px; width: 100%;">
+      <div class="box box-red" style="flex: 1; opacity: 0.6;">
+        <h3 class="red" style="margin-bottom: 12px; text-decoration: line-through;">Tamper kernel on disk</h3>
+        <p>Boot chain catches it. Device won't boot.</p>
+      </div>
+      <div class="box" style="flex: 1; border-style: dashed;">
+        <h3 style="margin-bottom: 12px; color: var(--text-soft);">What isn't covered by signing?</h3>
+        <p>Splash logos &mdash; branding images loaded during boot. Processed by the bootloader, but not part of the signed chain.</p>
+      </div>
+    </div>
+    <div class="slide-number">25</div>
+  </div>
+</body>
+</html>
