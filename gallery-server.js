@@ -104,8 +104,10 @@ function renderViewer(slides, slide, port) {
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
     iframe {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      position: fixed;
+      width: 1920px; height: 1080px;
       border: none;
+      transform-origin: top left;
     }
     .overlay {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -151,6 +153,16 @@ function renderViewer(slides, slide, port) {
     });
 
     navigate(idx);
+
+    function scaleViewer() {
+      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const frame = document.getElementById('frame');
+      frame.style.transform = 'scale(' + scale + ')';
+      frame.style.left = ((window.innerWidth  - 1920 * scale) / 2) + 'px';
+      frame.style.top  = ((window.innerHeight - 1080 * scale) / 2) + 'px';
+    }
+    scaleViewer();
+    window.addEventListener('resize', scaleViewer);
 
     const ws = new WebSocket('ws://localhost:${port}');
     ws.onmessage = () => location.reload();
