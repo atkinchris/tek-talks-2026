@@ -60,8 +60,8 @@ function renderGallery(slides, port) {
     }
     .thumb-wrap iframe {
       position: absolute; top: 0; left: 0;
-      width: 1280px; height: 720px;
-      transform: scale(0.21875); transform-origin: top left;
+      width: 1920px; height: 1080px;
+      transform-origin: top left;
       pointer-events: none; border: none;
     }
     .caption { padding: 8px 10px; font-size: 0.75rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -73,6 +73,15 @@ function renderGallery(slides, port) {
     ${cards}
   </div>
   <script>
+    function scaleFrames() {
+      document.querySelectorAll('.thumb-wrap').forEach(wrap => {
+        const scale = wrap.offsetWidth / 1920;
+        wrap.querySelector('iframe').style.transform = 'scale(' + scale + ')';
+      });
+    }
+    scaleFrames();
+    window.addEventListener('resize', scaleFrames);
+
     const ws = new WebSocket('ws://localhost:${port}');
     ws.onmessage = () => location.reload();
   </script>
