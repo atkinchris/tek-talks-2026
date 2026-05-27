@@ -5,7 +5,8 @@
     "screenshot": "node screenshot.js",
     "pptx": "node assemble-pptx.js",
     "build": "node screenshot.js && node assemble-pptx.js",
-    "gallery": "node gallery-server.js"
+    "gallery": "node gallery-server.js",
+    "build-gallery": "node build-gallery.js"
   },
   "dependencies": {
     "pptxgenjs": "^4.0.1",

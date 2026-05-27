@@ -1,4 +1,7 @@
 node_modules/
 output/
+docs/slides/
+docs/viewer/
+docs/index.html
 .superpowers/
 .DS_Store
