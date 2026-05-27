@@ -5,6 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
+const { WebSocketServer } = require('ws');
 
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
@@ -193,6 +194,18 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Gallery server running at http://localhost:${PORT}`);
+});
+
+// WebSocket server for live reload
+const wss = new WebSocketServer({ server });
+
+// Watch slides/ directory for changes
+fs.watch(path.join(ROOT, 'slides'), { recursive: true }, () => {
+  for (const client of wss.clients) {
+    if (client.readyState === client.OPEN) {
+      client.send('reload');
+    }
+  }
 });
 
 module.exports = { server };
