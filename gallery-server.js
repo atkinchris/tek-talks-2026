@@ -80,7 +80,73 @@ function renderGallery(slides, port) {
 }
 
 function renderViewer(slides, slide, port) {
-  return `<html><body>Viewer coming soon: ${slide}</body></html>`;
+  const idx = slides.indexOf(slide);
+  const safeIdx = idx === -1 ? 0 : idx;
+  const slidesJson = JSON.stringify(slides);
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${slide}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+    iframe {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      border: none;
+    }
+    .overlay {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 12px; align-items: center;
+      background: rgba(0,0,0,0.6); border-radius: 8px; padding: 8px 16px;
+      backdrop-filter: blur(4px);
+    }
+    .overlay button {
+      background: none; border: 1px solid #aaa; color: #eee;
+      padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+    }
+    .overlay button:hover { background: rgba(255,255,255,0.15); }
+    .overlay .counter { color: #aaa; font-size: 0.85rem; font-family: sans-serif; min-width: 60px; text-align: center; }
+  </style>
+</head>
+<body>
+  <iframe id="frame" src="/slides/${slide}"></iframe>
+  <div class="overlay">
+    <button id="btn-gallery">&#8617; Gallery</button>
+    <button id="btn-prev">&#8592;</button>
+    <span class="counter" id="counter"></span>
+    <button id="btn-next">&#8594;</button>
+  </div>
+  <script>
+    const slides = ${slidesJson};
+    let idx = ${safeIdx};
+
+    function navigate(newIdx) {
+      idx = ((newIdx % slides.length) + slides.length) % slides.length;
+      const slide = slides[idx];
+      document.getElementById('frame').src = '/slides/' + slide;
+      document.getElementById('counter').textContent = (idx + 1) + ' / ' + slides.length;
+      history.replaceState(null, '', '/?slide=' + encodeURIComponent(slide));
+    }
+
+    document.getElementById('btn-gallery').onclick = () => { location.href = '/'; };
+    document.getElementById('btn-prev').onclick = () => navigate(idx - 1);
+    document.getElementById('btn-next').onclick = () => navigate(idx + 1);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  navigate(idx - 1);
+      if (e.key === 'ArrowRight') navigate(idx + 1);
+    });
+
+    navigate(idx);
+
+    const ws = new WebSocket('ws://localhost:${port}');
+    ws.onmessage = () => location.reload();
+  </script>
+</body>
+</html>`;
 }
 
 function serveStatic(res, filePath) {
