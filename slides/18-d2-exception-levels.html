@@ -8,20 +8,74 @@
   <div class="slide" style="align-items: flex-start;">
     <div class="slide-label">Exception levels</div>
     <h2 style="margin-bottom: 48px;">Not all code runs equal.</h2>
-    <div class="layers" style="max-width: 1000px;">
-      <div class="layer layer-user">
-        EL0 &mdash; User land &nbsp;&bull;&nbsp; Your app, games, shell
-      </div>
-      <div style="text-align: center; font-size: 32px; color: var(--text-soft); line-height: 1;">&#8595; can request up</div>
-      <div class="layer layer-kernel">
-        EL1 &mdash; Kernel &nbsp;&bull;&nbsp; Manages hardware, enforces access
-      </div>
-      <div style="text-align: center; font-size: 32px; color: var(--text-soft); line-height: 1;">&#8595; only accessible from here</div>
-      <div class="layer layer-hw">
-        Secure registers &nbsp;&bull;&nbsp; Hardware encryption keys
-      </div>
-    </div>
-    <p class="soft" style="margin-top: 48px; max-width: 1200px;">A normal user-land program can't read the secure registers. We need to be the kernel. We need a kernel module &mdash; but the kernel won't load unsigned ones.</p>
+
+    <svg viewBox="0 0 1400 480" width="1400" height="480" style="max-width: 100%;">
+      <!-- SOFTWARE column header -->
+      <text x="300" y="24" text-anchor="middle" fill="#555" font-size="18" font-weight="600" letter-spacing="0.12em" font-family="system-ui, sans-serif">SOFTWARE</text>
+      <line x1="80" y1="34" x2="520" y2="34" stroke="#e2e4e8" stroke-width="2"/>
+
+      <!-- EL0 - User land -->
+      <rect x="80" y="52" width="440" height="110" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+      <text x="300" y="96" text-anchor="middle" fill="#2563eb" font-size="28" font-weight="700" font-family="system-ui, sans-serif">EL0 - User land</text>
+      <text x="300" y="130" text-anchor="middle" fill="#555" font-size="20" font-family="system-ui, sans-serif">Your app, games, shell</text>
+
+      <!-- Syscall arrow -->
+      <text x="300" y="194" text-anchor="middle" fill="#555" font-size="22" font-family="system-ui, sans-serif">&#9660; syscall</text>
+
+      <!-- EL1 - Kernel -->
+      <rect x="80" y="212" width="440" height="110" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+      <text x="300" y="256" text-anchor="middle" fill="#16a34a" font-size="28" font-weight="700" font-family="system-ui, sans-serif">EL1 - Kernel</text>
+      <text x="300" y="290" text-anchor="middle" fill="#555" font-size="20" font-family="system-ui, sans-serif">Manages hardware, enforces access</text>
+
+      <!-- HARDWARE column header -->
+      <text x="1000" y="24" text-anchor="middle" fill="#555" font-size="18" font-weight="600" letter-spacing="0.12em" font-family="system-ui, sans-serif">HARDWARE</text>
+      <line x1="780" y1="34" x2="1220" y2="34" stroke="#e2e4e8" stroke-width="2"/>
+
+      <!-- Secure registers chip -->
+      <rect x="780" y="160" width="440" height="210" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+      <!-- Chip pins left side -->
+      <rect x="772" y="200" width="14" height="16" rx="2" fill="#ccc"/>
+      <rect x="772" y="240" width="14" height="16" rx="2" fill="#ccc"/>
+      <rect x="772" y="280" width="14" height="16" rx="2" fill="#ccc"/>
+      <rect x="772" y="320" width="14" height="16" rx="2" fill="#ccc"/>
+      <!-- Chip pins right side -->
+      <rect x="1214" y="200" width="14" height="16" rx="2" fill="#ccc"/>
+      <rect x="1214" y="240" width="14" height="16" rx="2" fill="#ccc"/>
+      <rect x="1214" y="280" width="14" height="16" rx="2" fill="#ccc"/>
+      <rect x="1214" y="320" width="14" height="16" rx="2" fill="#ccc"/>
+      <!-- Chip pins top -->
+      <rect x="870" y="152" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="920" y="152" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="970" y="152" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="1020" y="152" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="1070" y="152" width="16" height="14" rx="2" fill="#ccc"/>
+      <!-- Chip pins bottom -->
+      <rect x="870" y="364" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="920" y="364" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="970" y="364" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="1020" y="364" width="16" height="14" rx="2" fill="#ccc"/>
+      <rect x="1070" y="364" width="16" height="14" rx="2" fill="#ccc"/>
+
+      <text x="1000" y="260" text-anchor="middle" fill="#dc2626" font-size="28" font-weight="700" font-family="system-ui, sans-serif">Secure registers</text>
+      <text x="1000" y="295" text-anchor="middle" fill="#555" font-size="20" font-family="system-ui, sans-serif">Hardware encryption keys</text>
+      <text x="1000" y="340" text-anchor="middle" fill="#dc2626" font-size="32">&#128274;</text>
+
+      <!-- Connection: kernel to chip -->
+      <line x1="520" y1="267" x2="770" y2="267" stroke="#16a34a" stroke-width="3"/>
+      <polygon points="764,256 780,267 764,278" fill="#16a34a"/>
+      <rect x="590" y="247" width="110" height="28" rx="6" fill="white" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="645" y="267" text-anchor="middle" fill="#16a34a" font-size="14" font-weight="600" font-family="system-ui, sans-serif">kernel module</text>
+
+      <!-- No access line from EL0 -->
+      <line x1="520" y1="107" x2="740" y2="107" stroke="#ccc" stroke-width="2" stroke-dasharray="8,6"/>
+      <text x="756" y="113" fill="#dc2626" font-size="28" font-weight="700" font-family="system-ui, sans-serif">&#10007;</text>
+      <text x="786" y="113" fill="#555" font-size="16" font-family="system-ui, sans-serif">no access</text>
+
+      <!-- Narrative -->
+      <text x="700" y="450" text-anchor="middle" fill="#555" font-size="20" font-style="italic" font-family="system-ui, sans-serif">User land can't reach the hardware directly. We need to be the kernel.</text>
+    </svg>
+
+    <p class="soft" style="margin-top: 32px; max-width: 1200px;">We need a kernel module &mdash; but the kernel won't load unsigned ones.</p>
     <div class="slide-number">18</div>
   </div>
 </body>
