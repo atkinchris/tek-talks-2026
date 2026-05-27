@@ -1,26 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="shared/style.css">
-</head>
-<body>
-  <div class="slide" style="align-items: flex-start;">
-    <div class="slide-label">The approach</div>
-    <h2 style="margin-bottom: 48px;">No boot chain verification &mdash;<br>we can tamper the kernel on disk.</h2>
-    <div style="display: flex; gap: 40px; width: 100%;">
-      <div class="box box-red" style="flex: 1;">
-        <h3 class="red" style="margin-bottom: 16px;">Too hard</h3>
-        <p>Patching passwd and Linux's access controls. Battle-tested code spread across too many places.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="shared/style.css" />
+  </head>
+  <body>
+    <div class="slide" style="align-items: flex-start">
+      <div class="slide-label">The approach</div>
+      <h2 style="margin-bottom: 48px">Pick your battle carefully.</h2>
+      <div style="display: flex; gap: 0; width: 100%; border-radius: 12px; overflow: hidden; border: 2px solid var(--border)">
+        <div class="box box-red" style="flex: 1; border-radius: 0; border: none; border-right: 2px solid var(--border); padding: 48px 56px">
+          <h3 class="red" style="margin-bottom: 20px">Don't touch</h3>
+          <p style="font-size: 34px; margin-bottom: 12px; color: var(--text)">Linux access controls</p>
+          <p>Battle-tested across decades and millions of deployments. Spread across too many places to patch reliably.</p>
+        </div>
+        <div class="box box-green" style="flex: 1; border-radius: 0; border: none; padding: 48px 56px">
+          <h3 class="green" style="margin-bottom: 20px">Patch this</h3>
+          <p style="font-size: 34px; margin-bottom: 12px; color: var(--text)">Manufacturer signing check</p>
+          <p>Custom code, not in the upstream kernel. Younger, less battle-tested. One function to patch out.</p>
+        </div>
       </div>
-      <div style="font-size: 56px; color: var(--text-soft); align-self: center; flex-shrink: 0;">vs</div>
-      <div class="box box-green" style="flex: 1;">
-        <h3 class="green" style="margin-bottom: 16px;">Easy target</h3>
-        <p>The manufacturer's custom code-signing check &mdash; hastily added on top. Patch it out.</p>
-      </div>
+      <p class="soft" style="margin-top: 40px">No boot-chain verification means we can modify the kernel on disk before it ever boots.</p>
+      <div class="slide-number">19</div>
     </div>
-    <p class="soft" style="margin-top: 40px;">Kernel now accepts unsigned modules. But we still need a way to escalate to kernel level at runtime &mdash; the kernel CVE gives us that.</p>
-    <div class="slide-number">19</div>
-  </div>
-</body>
+  </body>
 </html>
