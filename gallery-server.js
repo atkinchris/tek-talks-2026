@@ -106,7 +106,7 @@ const server = http.createServer((req, res) => {
     const slide = reqUrl.searchParams.get('slide');
     if (slide) {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(renderViewer(slides, slide, port));  // Task 3
+      res.end(renderViewer(slides, slide, PORT));  // Task 3
       return;
     }
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
