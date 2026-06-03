@@ -9,213 +9,206 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - Let this sit for a moment. Don't rush into speaking.
 - "Let's hack a games console."
 
-## 01 - Opening (toy photo)
+## 01 - Opening (toy photos)
 
 - Personal story. Keep it warm and brief.
-- "When I was a kid, I used to take things apart to see how they worked. Radios, toys, anything with screws I could get at. I wanted to know what was inside."
-- The photo should do the heavy lifting here.
+- "When I was a kid, I used to take things apart to see how they worked. Action Man, Furby, HitClips - anything I could get my hands on."
+- The three-panel photo does the heavy lifting. Let the audience look.
 
 ## 02 - Bridge
 
 - Transition from childhood to now.
-- "That curiosity never stopped. It just found new targets."
-- Set up the structure: three devices, each harder than the last. Same approach every time - be curious, be persistent.
+- "That curiosity grew up. Toys had screws. Consoles had encryption."
+- "Each generation of protection made the next generation of hackers more inventive."
 - This is the arrow for the whole talk. Plant it here, reinforce it at the end.
 
 ## 03 - Ground rules
 
 - Matter-of-fact, not preachy. Read the three rules, then move on quickly.
-- "Before we start - three rules I follow. Only devices I own. Never interfere with anyone else's device or experience. And this is for learning - not piracy, not profit."
+- "Before we start - three rules. Only devices you personally own. Never interfere with others' devices or experiences. For learning - not piracy, not profit."
 - Don't dwell. The audience gets it.
 
-## 04 - Lock 1: The cheap console
+## 04 - Device 1 (Lock 1: The cheap console)
 
-- Section title. Brief pause.
-- "Our first lock."
-
-## 05 - Device 1
-
-- Introduce the device. Cheap handheld, comes preloaded with games.
+- This slide does double duty as both the section opener and the device intro. Let the "Lock 1" label land before you start talking.
+- Introduce the device. Cheap handheld, preloaded with games.
 - The big reveal: "It runs Linux." Pause on this - it's the hook.
-- DFU mode: "It even has a firmware recovery mode. So if we brick it, we can always recover. That makes it a great device to experiment with."
+- DFU mode: "It even has a firmware recovery mode. So if we brick it, we can recover. Great for exploration."
 
-## 06 - PCB photo
+## 05 - PCB photo
 
-- "I opened it up. And I spotted something interesting on the circuit board."
+- "I opened it up. And I spotted something interesting..."
 - Let the audience look at the photo for a moment before moving on.
 - You're teasing the UART pads here - don't explain yet.
 
-## 07 - Spotting UART on a PCB
+## 06 - UART on a PCB
 
-- This is the reveal from "I spotted something interesting." Show them the concrete thing before explaining it.
-- Walk through the two variants: 3-pin and 4-pin.
-- Point out the square pad: "One pad is usually square - that's ground. It helps you orient the pins."
-- TX is data out from the device, RX is data in. GND is shared ground. VCC is power - usually not needed.
-- The tip: "Not sure which pin is which? Use a logic analyser. If you haven't got one, a multimeter works - watch for voltage fluctuations on each pad."
+- This is the reveal. Show them what you spotted.
+- Walk through the three pads: TX is data out, RX is data in, GND is shared ground.
+- Point out the square pad: "The square pad is usually ground. It helps you orient the pins."
+- The tip: "Not sure which is which? A multimeter will show voltage fluctuations on the active pads."
 
-## 08 - UART: what is it and how it works
+## 07 - UART: how it works
 
-- Now explain the thing they just saw on the board.
-- "UART - Universal Asynchronous Receiver-Transmitter. It's a serial debug port, and the manufacturer left it on the production board."
-- Two wires, TX and RX, cross-connected at an agreed baud rate. No clock wire - the timing is encoded in the signal itself.
-- Walk through the waveform: idle state is high, start bit pulls low, then 8 data bits (LSB first), then the stop bit returns high.
-- 8N1 is the most common configuration - 8 data bits, no parity, 1 stop bit.
+- Now explain the protocol behind the pads.
+- "Two wires, TX and RX, cross-connected at an agreed baud rate. No clock wire - the timing is encoded in the signal itself."
+- Walk through the waveform: idle high, start bit pulls low, 8 data bits LSB first, stop bit returns high.
+- "8N1 - 8 data bits, no parity, 1 stop bit. The most common configuration."
 
-## 09 - Connected. Got a shell.
+## 08 - U-Boot shell
 
-- This is the payoff from the UART aside. The concept we just learned has immediate practical application.
-- Walk through the terminal output: "We're in U-Boot - that's the bootloader. We can see it's Linux. Let's dump the firmware."
-- Mention the safety net: "DFU mode means we can always reflash. Bricking is nearly impossible."
+- This is the payoff. The concept we just learned has immediate practical application.
+- Walk through the terminal: "We're in U-Boot - that's the bootloader. We can see the boot arguments, we can see it's Linux."
+- The `ums` command: "U-Boot can act as a USB mass storage gadget. The eMMC appears as an external drive on our host machine. We dump the whole thing with `dd`."
+- This gives us the firmware to analyse.
 
-## 10 - What's inside a firmware image?
+## 09 - Firmware layout
 
-- Pause before this slide - we're about to analyse the firmware, so the audience needs to know what they're looking at.
-- Walk across the partition bar left to right: bootloader runs first, then kernel, then the root filesystem which has everything else - applications, config, games.
-- "The firmware dump is all of these concatenated into one big binary blob. We need to pull them apart." - This sets up binwalk on the next slide.
+- Pause here - we're about to analyse the firmware, so the audience needs to know what they're looking at.
+- Walk across the three cards left to right: bootloader runs first, then kernel, then rootfs which has everything else.
+- Emphasise the different origins: "Each part comes from a different source - and has a different attack surface. The bootloader and rootfs are vendor-written. The kernel is upstream Linux with vendor patches."
+- The size bar reinforces how much bigger the rootfs is.
 
-## 11 - Code you can't read (reverse engineering)
+## 10 - Reverse engineering intro
 
-- Set up the concept: source code gets compiled into a binary. We don't have the source, but tools like Ghidra can disassemble the binary back into something we can read.
+- Set up the concept: source code gets compiled into a binary. We don't have the source. Tools like Ghidra can disassemble the binary back into something readable.
+- Walk across the three columns: source, compiled binary (just hex bytes), disassembly.
 - "We don't get the source back exactly - but we get enough to understand what the code is doing."
-- This is a high-level framing slide. Ghidra comes back later with a concrete example.
+- This is a framing slide. Ghidra comes back later with a concrete example.
 
-## 12 - Binwalk
+## 11 - Binwalk
 
-- "Binwalk is like a Swiss Army knife for firmware. Point it at a binary and it tells you what's inside."
-- Walk through the output: we can see a Linux kernel at the start, and then high-entropy data further in.
+- "Binwalk scans for known signatures - it tells us what it recognises, and what it can't explain."
+- Two results side by side: the kernel image is readable (identifiable structures), the rootfs is opaque (high entropy).
 - Key point: "The kernel is readable. The rootfs is not."
 - This naturally leads to: what does "high entropy" actually mean?
 
-## 13 - Entropy
+## 12 - Entropy
 
-- This is a concept worth spending a moment on. Entropy is a measure of randomness.
-- Low entropy: structured, readable data. Text files, source code, an uncompressed kernel.
-- High entropy: compressed or encrypted data. Looks like random noise.
-- "The rootfs reads as near-random - it's encrypted. But the kernel is low entropy. We can analyse it."
-- The audience should now understand why we're going to focus on the kernel.
+- Worth spending a moment on. Entropy is a measure of randomness.
+- Point to the two visualisations: "Low entropy on the left - you can see patterns, structure. That's the kernel. High entropy on the right - uniform noise. That's the encrypted rootfs."
+- "The rootfs reads as near-random - it's encrypted. But the kernel? Low entropy. We can analyse it."
+- The audience should now understand why we focus on the kernel.
 
-## 14 - Ghidra comparison
+## 13 - Ghidra (strings + decompilation)
 
-- This is the detective work. We extracted the kernel and loaded it into Ghidra.
-- "I compared our kernel against a known Linux kernel. Most of it is identical - but there are differences."
-- Point to the key difference: the SquashFS decompression function has an extra parameter - a key.
-- "There's a custom encryption implementation bolted onto SquashFS. And the key is right there in the code."
-- Let that land. This is the "aha" moment for device 1.
+- This is the detective work. Three steps, walk through each.
+- Step 1: "We run `strings` on the kernel binary. It pulls out anything that looks like text. One result jumps out - `squashfs_decrypt_bh_to_actor`. That function name doesn't exist in any upstream Linux source."
+- Step 2: "We load the kernel into Ghidra and find that function. It decompiles into something readable - and it's calling AES decrypt with a fixed key."
+- Step 3: "The key is a hardcoded constant baked into the binary. Anyone with the firmware has it."
+- Let the discovery box land: the rootfs was never truly secret - just obscured.
 
-## 15 - Lock 1 win
+## 14 - Lock 1 win
 
-- Celebrate briefly. "We have the key. We can decrypt and repack the rootfs. First lock picked."
-- Then the reflection: "How could they have done better? A secure element - dedicated hardware to protect secrets. But that adds cost to every unit. On a cheap console, that's a real trade-off."
+- Celebrate briefly. "We have the key. Decrypt and repack the rootfs. First lock picked."
+- Then the reflection: "How could they have done better? Store the key in a secure element - hardware designed to protect secrets. But that adds cost to every unit. On a cheap console, that's a real trade-off."
 - This sets up device 2: same manufacturer, but they've spent more money.
 
-## 16 - Lock 2: The expensive console
+## 15 - Device 2 (Lock 2: The expensive console)
 
-- Section title. "Our second lock."
-- Brief pause before moving on.
-
-## 17 - Device 2
-
-- Same manufacturer, more expensive device.
+- Same manufacturer, more expensive. Let the "Lock 2" label do its work.
 - "Same encryption scheme, but this time the chip has hardware encryption. The key isn't in the firmware - it lives in secure hardware registers, read at runtime."
 - This is the escalation: the trick from device 1 won't work here.
 
-## 18 - Exception levels
+## 16 - Exception levels
 
-- Concept aside. This needs to be clear but not over-explained.
-- Walk down the layers: "Your apps run at the top - user land. They can request things from the kernel, but they can't access hardware directly."
-- "The kernel runs at a higher privilege level. It manages hardware, enforces access. The secure registers sit below that."
-- Key point: "A normal program can't read the secure registers. We need to be the kernel. We need a kernel module - but the kernel won't load unsigned ones."
+- Concept aside. Clear but not over-explained.
+- Walk through the diagram: "Your apps run at the top - user land, EL0. They can't access hardware directly."
+- "The kernel runs at EL1. It manages hardware, enforces access. A kernel module can reach the secure registers."
+- Key point: "We need to be the kernel. We need a kernel module - but the kernel won't load unsigned ones."
 
-## 19 - The approach
+## 17 - The approach
 
-- Two options presented. Walk through why one is hard and the other is easy.
-- "Could we patch passwd and Linux's access controls? Too hard. That code is battle-tested and spread across the entire kernel."
-- "But the manufacturer's code-signing check? That's custom code, hastily added. Much easier to find and patch out."
-- "Now the kernel accepts unsigned modules. But we still need to escalate to kernel level at runtime - and that's where the CVE comes in."
-- You might briefly explain what a CVE is if the audience needs it: a publicly disclosed vulnerability with a tracking number.
+- Two options. Walk through why one is hard and the other is easy.
+- "Could we attack Linux's access controls? Battle-tested across decades. Spread across too many places to patch reliably."
+- "But the manufacturer's signing check? Custom code, not in upstream Linux. Younger, less tested. One function to patch out."
+- "And there's no boot-chain verification - so we can modify the kernel on disk before it ever boots."
 
-## 20 - Escalate, then load
+## 18 - Escalate, then load
 
 - Two-step process. Keep it tight.
-- "Step one: exploit the CVE to escalate from user level to kernel level."
-- "Step two: load our custom kernel module. It reads the key from the secure registers."
+- "Step one: exploit a CVE to escalate from user level to kernel level at runtime."
+- "Step two: load our kernel module. The signing check is patched out, so it loads. It reads the key from the secure registers."
+- You might briefly explain what a CVE is if the audience needs it: a publicly disclosed vulnerability with a tracking number.
 
-## 21 - Lock 2 win
+## 19 - Lock 2 win
 
-- "Second lock picked."
+- "Key extracted. Second lock picked."
 - Reflection: "How could they have done better? Keep the kernel up to date - a patched kernel has no known CVE. And verify the boot chain so we can't tamper with the kernel on disk."
 - "Both cost development time and testing. Trade-off." - This directly sets up device 3.
 
-## 22 - Lock 3: The signed console
+## 20 - Device 3 (Lock 3: The signed console)
 
 - "Our third lock. This time, they've done what we said they should."
 - Pause. The audience should feel the escalation.
+- "Every byte of firmware is cryptographically verified before it runs. The public key is burned into hardware at the factory. The private key never leaves the build system."
 
-## 23 - Signed boot chain
+## 21 - Signed boot chain
 
-- This is an important concept aside. Take your time.
-- Walk through the chain visually, left to right: "ROM verifies the bootloader. Bootloader verifies the kernel. Kernel verifies the rootfs."
-- "If any link fails verification, the device refuses to boot. We can't tamper with the kernel on disk any more."
+- Important concept. Take your time.
+- Walk through the chain left to right: "ROM is the root of trust. It verifies the bootloader. Bootloader verifies the kernel. Kernel verifies the rootfs."
+- Point to the hash demonstration: "Change one byte and you get a completely different hash. The signature is invalid. The device halts."
+- "We can't patch the kernel on disk, swap the rootfs, or inject code. The chain catches it."
 
-## 24 - Keys
+## 22 - Keys
 
 - Explain why we can't just extract the signing key.
-- "The private key stays in the manufacturer's build system. It never ships on the device - not even in hardware."
-- "The public key is burned into an eFuse on the chip at the factory. Written once - physically impossible to overwrite. It can verify signatures, but it can't create them."
+- "The private key stays in the manufacturer's build system. It never ships on the device - not even in hardware. It signs every firmware release."
+- "The public key is burned into an eFuse on the chip. Written once - physically impossible to overwrite. It can verify signatures, but it can't create them."
 - "There's nothing to extract. The key that matters never exists on the device."
 
-## 25 - The wall
+## 23 - The wall
 
 - Acknowledge that our previous approach is completely blocked.
-- "Tamper the kernel on disk? Boot chain catches it. Device won't boot."
+- "Tamper the kernel on disk? Boot chain catches it. Device won't boot." - The strikethrough on the slide reinforces this visually.
 - Then the question: "What isn't covered by signing?"
-- "Splash logos - branding images loaded during boot. The bootloader processes them, but they're not part of the signed chain."
+- "Splash logos - branding images loaded during boot. Processed by the bootloader, but not part of the signed chain."
 - This should feel like a small crack in the wall.
 
-## 26 - Instructions in memory
+## 24 - Instructions in memory
 
 - Before we can explain the buffer overflow, the audience needs to understand how code executes.
 - "Instructions are just bytes sitting in memory. The processor has a program counter - the PC - that points to the current instruction."
-- "It reads the instruction, executes it, moves to the next one. Your program is just the PC walking through memory."
+- Point to the memory rows: "It reads the instruction, executes it, moves to the next address. Your program is just the PC walking through memory."
 - Key takeaway: "Control what the PC points to, and you control what the processor does."
 
-## 27 - Buffer overflow
+## 25 - Buffer overflow
 
 - Two-panel visual. Walk through both.
 - Normal: "The software allocates a buffer for input. The input fits. Everything is fine."
-- Overflow: "But if the input is larger than the buffer, and the software doesn't check the size, it spills over into adjacent memory. That adjacent memory might contain instructions the processor is about to execute."
+- Overflow: "But if the input is larger than the buffer, and the software doesn't check the size, it spills past the buffer and overwrites the instructions the processor is about to execute."
 - "By controlling the overflow, we control what the processor does next."
-- This is a foundational security concept. Let it breathe.
+- Foundational security concept. Let it breathe.
 
-## 28 - Fuzzing
+## 26 - Fuzzing
 
 - "How do we find a buffer overflow? We could read the code line by line. Or we could throw thousands of malformed inputs at it and see what crashes."
 - "A crash means the software did something unexpected. And unexpected behaviour is exploitable."
 - AFL: "American Fuzzy Lop. It mutates inputs intelligently - tracks which code paths they hit, steers towards unexplored territory."
 - The punchline: "We pointed AFL at the bootloader's splash logo parser."
 
-## 29 - TOCTOU
+## 27 - TOCTOU
 
 - This is the climax of the talk. Three steps, left to right.
 - "Time of check: the boot chain verifies everything. All good."
 - "Time of use: we overflow the logo buffer, overwriting the verified instructions before they execute."
-- "The processor runs our code. The chain approved something else entirely."
+- "Our code runs. The processor executes our instructions. The chain approved something else entirely."
 - Let this land. It's a satisfying twist.
 
-## 30 - Lock 3 win
+## 28 - Lock 3 win
 
-- "Third lock picked. We're running unsigned code. We can extract the key from the secure registers."
-- No reflection box on this slide - that comes on the next slide as a broader point.
+- "Unsigned code running. Key extracted. Third lock picked."
+- Keep it brief. No reflection box on this slide - that comes next as a broader point.
 
-## 31 - Security is a trade-off
+## 29 - Security is a trade-off
 
 - This is the "so what" of the entire talk. Slow down.
-- "These manufacturers didn't get smarter. The risk changed."
-- Device 1: "A secure element costs real money per unit, multiplied across hundreds of thousands of devices. Against a handful of hobbyists? Not a good trade."
-- Device 2: "Kernel updates and boot chain verification cost development time. Against a few curious people? Not worth it."
+- "They didn't get smarter. The risk changed."
+- Device 1: "A secure element costs money per unit, multiplied across hundreds of thousands. Against a handful of hobbyists? Not a good trade."
+- Device 2: "Kernel updates and boot-chain verification cost development time. Against a few curious people? Not worth it."
 - Device 3: "Some of those curious people turned to piracy. The risk became commercial. Then the investment was justified."
 
-## 32 - Close
+## 30 - Close
 
 - Land the arrow. This is what you want them to remember.
 - "Security is an arms race, driven by economics as much as technology."
