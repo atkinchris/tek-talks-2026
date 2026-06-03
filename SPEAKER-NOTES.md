@@ -25,8 +25,7 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 ## 03 - Three rules.
 
 - Matter-of-fact, not preachy. Read the three rules, then move on quickly.
-- "Before we start - three rules. Only devices you personally own. Never interfere with others' devices or experiences. For learning - not piracy, not
-        profit."
+- "Before we start - three rules. Only devices you personally own. Never interfere with others' devices or experiences. For learning - not piracy, not profit."
 - Don't dwell. The audience gets it.
 
 ## 04 - The cheap console.
@@ -60,22 +59,19 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 
 - This is the payoff. The concept we just learned has immediate practical application.
 - Walk through the terminal: "We're in U-Boot - that's the bootloader. We can see the boot arguments, we can see it's Linux."
-- The `ums` command: "U-Boot can act as a USB mass storage gadget. The eMMC appears as an external drive on our host machine. We dump the whole thing with
-        `dd`."
+- The `ums` command: "U-Boot can act as a USB mass storage gadget. The eMMC appears as an external drive on our host machine. We dump the whole thing with `dd`."
 - This gives us the firmware to analyse.
 
 ## 09 - A firmware image is built from independent parts
 
 - Pause here - we're about to analyse the firmware, so the audience needs to know what they're looking at.
 - Walk across the three cards left to right: bootloader runs first, then kernel, then rootfs which has everything else.
-- Emphasise the different origins: "Each part comes from a different source - and has a different attack surface. The bootloader and rootfs are
-        vendor-written. The kernel is upstream Linux with vendor patches."
+- Emphasise the different origins: "Each part comes from a different source - and has a different attack surface. The bootloader and rootfs are vendor-written. The kernel is upstream Linux with vendor patches."
 - The size bar reinforces how much bigger the rootfs is.
 
 ## 10 - Undoing the compiler.
 
-- Set up the concept: source code gets compiled into a binary. We don't have the source. Tools like Ghidra can disassemble the binary back into something
-        readable.
+- Set up the concept: source code gets compiled into a binary. We don't have the source. Tools like Ghidra can disassemble the binary back into something readable.
 - Walk across the three columns: source, compiled binary (just hex bytes), disassembly.
 - "We don't get the source back exactly - but we get enough to understand what the code is doing."
 - This is a framing slide. Ghidra comes back later with a concrete example.
@@ -90,16 +86,14 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 ## 12 - Randomness reveals structure.
 
 - Worth spending a moment on. Entropy is a measure of randomness.
-- Point to the two visualisations: "Low entropy on the left - you can see patterns, structure. That's the kernel. High entropy on the right - uniform
-        noise. That's the encrypted rootfs."
+- Point to the two visualisations: "Low entropy on the left - you can see patterns, structure. That's the kernel. High entropy on the right - uniform noise. That's the encrypted rootfs."
 - "The rootfs reads as near-random - it's encrypted. But the kernel? Low entropy. We can analyse it."
 - The audience should now understand why we focus on the kernel.
 
 ## 13 - Strings + Ghidra leads straight to the key.
 
 - This is the detective work. Three steps, walk through each.
-- Step 1: "We run `strings` on the kernel binary. It pulls out anything that looks like text. One result jumps out - `squashfs_decrypt_bh_to_actor`. That
-        function name doesn't exist in any upstream Linux source."
+- Step 1: "We run `strings` on the kernel binary. It pulls out anything that looks like text. One result jumps out - `squashfs_decrypt_bh_to_actor`. That function name doesn't exist in any upstream Linux source."
 - Step 2: "We load the kernel into Ghidra and find that function. It decompiles into something readable - and it's calling AES decrypt with a fixed key."
 - Step 3: "The key is a hardcoded constant baked into the binary. Anyone with the firmware has it."
 - Let the discovery box land: the rootfs was never truly secret - just obscured.
@@ -107,15 +101,13 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 ## 14 - We have the key.
 
 - Celebrate briefly. "We have the key. Decrypt and repack the rootfs. First lock picked."
-- Then the reflection: "How could they have done better? Store the key in a secure element - hardware designed to protect secrets. But that adds cost to
-        every unit. On a cheap console, that's a real trade-off."
+- Then the reflection: "How could they have done better? Store the key in a secure element - hardware designed to protect secrets. But that adds cost to every unit. On a cheap console, that's a real trade-off."
 - This sets up device 2: same manufacturer, but they've spent more money.
 
 ## 15 - The expensive console.
 
 - Same manufacturer, more expensive. Let the "Lock 2" label do its work.
-- "Same encryption scheme, but this time the chip has hardware encryption. The key isn't in the firmware - it lives in secure hardware registers, read at
-        runtime."
+- "Same encryption scheme, but this time the chip has hardware encryption. The key isn't in the firmware - it lives in secure hardware registers, read at runtime."
 - This is the escalation: the trick from device 1 won't work here.
 
 ## 16 - Not all code runs equal.
@@ -142,22 +134,19 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 ## 19 - Key extracted. Second lock picked.
 
 - "Key extracted. Second lock picked."
-- Reflection: "How could they have done better? Keep the kernel up to date - a patched kernel has no known CVE. And verify the boot chain so we can't
-        tamper with the kernel on disk."
+- Reflection: "How could they have done better? Keep the kernel up to date - a patched kernel has no known CVE. And verify the boot chain so we can't tamper with the kernel on disk."
 - "Both cost development time and testing. Trade-off." - This directly sets up device 3.
 
 ## 20 - The signed console.
 
 - "Our third lock. This time, they've done what we said they should."
 - Pause. The audience should feel the escalation.
-- "Every byte of firmware is cryptographically verified before it runs. The public key is burned into hardware at the factory. The private key never
-        leaves the build system."
+- "Every byte of firmware is cryptographically verified before it runs. The public key is burned into hardware at the factory. The private key never leaves the build system."
 
 ## 21 - Every step checks the next.
 
 - Important concept. Take your time.
-- Walk through the chain left to right: "ROM is the root of trust. It verifies the bootloader. Bootloader verifies the kernel. Kernel verifies the
-        rootfs."
+- Walk through the chain left to right: "ROM is the root of trust. It verifies the bootloader. Bootloader verifies the kernel. Kernel verifies the rootfs."
 - Point to the hash demonstration: "Change one byte and you get a completely different hash. The signature is invalid. The device halts."
 - "We can't patch the kernel on disk, swap the rootfs, or inject code. The chain catches it."
 
@@ -165,8 +154,7 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 
 - Explain why we can't just extract the signing key.
 - "The private key stays in the manufacturer's build system. It never ships on the device - not even in hardware. It signs every firmware release."
-- "The public key is burned into an eFuse on the chip. Written once - physically impossible to overwrite. It can verify signatures, but it can't create
-        them."
+- "The public key is burned into an eFuse on the chip. Written once - physically impossible to overwrite. It can verify signatures, but it can't create them."
 - "There's nothing to extract. The key that matters never exists on the device."
 
 ## 23 - Our previous approach is blocked.
@@ -188,8 +176,7 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 
 - Two-panel visual. Walk through both.
 - Normal: "The software allocates a buffer for input. The input fits. Everything is fine."
-- Overflow: "But if the input is larger than the buffer, and the software doesn't check the size, it spills past the buffer and overwrites the
-        instructions the processor is about to execute."
+- Overflow: "But if the input is larger than the buffer, and the software doesn't check the size, it spills past the buffer and overwrites the instructions the processor is about to execute."
 - "By controlling the overflow, we control what the processor does next."
 - Foundational security concept. Let it breathe.
 
