@@ -1,94 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="shared/style.css">
-  <style>
-    .images {
-      display: flex;
-      width: 100%;
-      gap: 48px;
-      margin: 48px 0 24px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="shared/style.css" />
+    <style>
+      .images {
+        display: flex;
+        width: 100%;
+        gap: 48px;
+        margin: 48px 0 24px;
+      }
 
-    .image-block {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-    }
+      .image-block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+      }
 
-    .image-bar {
-      height: 120px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-    }
+      .image-bar {
+        height: 120px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      }
 
-    .bar-kernel { background: #2563eb; }
-    .bar-rootfs { background: #374151; }
+      .bar-kernel {
+        background: #2563eb;
+      }
+      .bar-rootfs {
+        background: #374151;
+      }
 
-    .label-block {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+      .label-block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
 
-    .label-name {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--text);
-    }
+      .label-name {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text);
+      }
 
-    .label-desc {
-      font-size: 24px;
-      color: var(--text-soft);
-    }
+      .label-desc {
+        font-size: 24px;
+        color: var(--text-soft);
+      }
 
-    .label-tag {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 4px 16px;
-      border-radius: 20px;
-      font-size: 20px;
-      font-weight: 600;
-    }
+      .label-tag {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 4px 16px;
+        border-radius: 20px;
+        font-size: 20px;
+        font-weight: 600;
+      }
 
-    .tag-readable   { background: #dbeafe; color: #1d4ed8; }
-    .tag-unreadable { background: #fef2f2; color: #dc2626; }
-  </style>
-</head>
-<body>
-  <div class="slide" style="align-items: flex-start;">
-    <div class="slide-label">Binwalk</div>
-    <h2><code class="cmd">binwalk</code> shows us the likely contents of a binary image</h2>
-    <p class="soft" style="font-size: 30px; margin-top: 16px;">Scans for known signatures - it tells us what it recognises, and what it can't explain.</p>
+      .tag-readable {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .tag-unreadable {
+        background: #fef2f2;
+        color: #dc2626;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide" style="align-items: flex-start">
+      <div class="slide-label">Binwalk</div>
+      <h2><code class="cmd">binwalk</code> shows us the likely contents of a binary image</h2>
+      <p class="soft" style="font-size: 30px; margin-top: 16px">Scans for known signatures - it tells us what it recognises, and what it can't explain.</p>
 
-    <div class="images">
-      <div class="image-block">
-        <div class="image-bar bar-kernel">boot.img</div>
-        <div class="label-block">
-          <div class="label-name">Kernel</div>
-          <div class="label-desc">Version string, AES tables, ELF objects - all identifiable</div>
-          <span class="label-tag tag-readable">Readable</span>
+      <div class="images">
+        <div class="image-block">
+          <div class="image-bar bar-kernel">boot.img</div>
+          <div class="label-block">
+            <div class="label-name">Kernel</div>
+            <div class="label-desc">Version string, AES tables, ELF objects - all identifiable</div>
+            <span class="label-tag tag-readable">Readable</span>
+          </div>
+        </div>
+        <div class="image-block">
+          <div class="image-bar bar-rootfs">rootfs.img</div>
+          <div class="label-block">
+            <div class="label-name">Root filesystem</div>
+            <div class="label-desc">High entropy - compressed, encrypted, or both</div>
+            <span class="label-tag tag-unreadable">Opaque</span>
+          </div>
         </div>
       </div>
-      <div class="image-block">
-        <div class="image-bar bar-rootfs">rootfs.img</div>
-        <div class="label-block">
-          <div class="label-name">Root filesystem</div>
-          <div class="label-desc">High entropy - compressed, encrypted, or both</div>
-          <span class="label-tag tag-unreadable">Opaque</span>
-        </div>
-      </div>
+
+      <div class="slide-number">11</div>
     </div>
-
-    <div class="slide-number">11</div>
-  </div>
-</body>
+    <aside class="notes">
+      <p>"Binwalk scans for known signatures - it tells us what it recognises, and what it can't explain."</p>
+      <p>Two results side by side: the kernel image is readable (identifiable structures), the rootfs is opaque (high entropy).</p>
+      <p>Key point: "The kernel is readable. The rootfs is not."</p>
+      <p>This naturally leads to: what does "high entropy" actually mean?</p>
+    </aside>
+  </body>
 </html>

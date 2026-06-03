@@ -189,6 +189,9 @@ p, li { font-size: 38px; line-height: 1.5; color: var(--text-soft); }
 .slide-win { background: #f0fdf4; }
 .win-icon { font-size: 120px; line-height: 1; }
 
+/* Speaker notes (hidden from rendering, extracted by build scripts) */
+aside.notes { display: none; }
+
 /* Inline command / tool name */
 code.cmd {
   font-family: var(--font-mono);
