@@ -24,6 +24,7 @@ for (const file of files) {
 
   // Extract a human-readable title: try <h1> or <h2>, fall back to filename
   const heading = $('h1, h2').first()
+  if (heading.length) heading.find('br').replaceWith(' ')
   const title = heading.length
     ? heading.text().replace(/\s+/g, ' ').trim().replace(/\.+$/, '')
     : file.replace('.html', '').replace(/^\d+-/, '')

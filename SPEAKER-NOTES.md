@@ -15,7 +15,7 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - "When I was a kid, I used to take things apart to see how they worked. Action Man, Furby, HitClips - anything I could get my hands on."
 - The three-panel photo does the heavy lifting. Let the audience look.
 
-## 02 - Toys had screws.Consoles had encryption
+## 02 - Toys had screws. Consoles had encryption
 
 - Transition from childhood to now.
 - "That curiosity grew up. Toys had screws. Consoles had encryption."
@@ -41,7 +41,7 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - Let the audience look at the photo for a moment before moving on.
 - You're teasing the UART pads here - don't explain yet.
 
-## 06 - A serial debug port,left behind by the manufacturer
+## 06 - A serial debug port, left behind by the manufacturer
 
 - This is the reveal. Show them what you spotted.
 - Walk through the three pads: TX is data out, RX is data in, GND is shared ground.
@@ -200,7 +200,7 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - "Unsigned code running. Key extracted. Third lock picked."
 - Keep it brief. No reflection box on this slide - that comes next as a broader point.
 
-## 29 - They didn't get smarter.The risk changed
+## 29 - They didn't get smarter. The risk changed
 
 - This is the "so what" of the entire talk. Slow down.
 - "They didn't get smarter. The risk changed."
@@ -208,7 +208,7 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - Device 2: "Kernel updates and boot-chain verification cost development time. Against a few curious people? Not worth it."
 - Device 3: "Some of those curious people turned to piracy. The risk became commercial. Then the investment was justified."
 
-## 30 - Security is an arms race,driven by economicsas much as technology
+## 30 - Security is an arms race, driven by economics as much as technology
 
 - Land the arrow. This is what you want them to remember.
 - "Security is an arms race, driven by economics as much as technology."
