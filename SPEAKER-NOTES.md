@@ -106,36 +106,37 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 
 ## 15 - The expensive console
 
-- Same manufacturer, more expensive. Let the "Lock 2" label do its work.
-- "Same encryption scheme, but this time the chip has hardware encryption. The key isn't in the firmware - it lives in secure hardware registers, read at runtime."
-- This is the escalation: the trick from device 1 won't work here.
+- "Same manufacturer, higher price tag. Same encrypted rootfs. But this time, the key isn't in the firmware."
+- "It lives in a secure hardware register, readable only by the kernel at runtime. No amount of reverse engineering the binary will find it - it's not there."
+- Let the audience feel the escalation. The easy path from Device 1 - grepping through strings in Ghidra - is completely closed.
 
-## 16 - Not all code runs equal
+## 16 - We have a shell. We need the kernel
 
-- Concept aside. Clear but not over-explained.
-- Walk through the diagram: "Your apps run at the top - user land, EL0. They can't access hardware directly."
-- "The kernel runs at EL1. It manages hardware, enforces access. A kernel module can reach the secure registers."
-- Key point: "We need to be the kernel. We need a kernel module - but the kernel won't load unsigned ones."
+- "We have a UART shell from the same technique as Device 1. But our shell runs in user-land - EL0."
+- Walk through the diagram: "The key sits in a secure hardware register. Only the kernel, running at EL1, can reach it through a kernel module."
+- "From user-land? No access. We're on the wrong side of the privilege boundary."
+- Build the tension: "We need to run our own code at kernel level. But the kernel has a module signing check - it won't load anything we haven't signed."
 
-## 17 - Pick your battle carefully
+## 17 - Nobody checks the kernel
 
-- Two options. Walk through why one is hard and the other is easy.
-- "Could we attack Linux's access controls? Battle-tested across decades. Spread across too many places to patch reliably."
-- "But the manufacturer's signing check? Custom code, not in upstream Linux. Younger, less tested. One function to patch out."
-- "And there's no boot-chain verification - so we can modify the kernel on disk before it ever boots."
+- This is the turning point. Pause before delivering the title.
+- "The bootloader is burned into ROM - we can't touch it. But look at what it does next: it loads the kernel from writable storage with no signature check. No integrity verification. Nothing."
+- "And here's the key insight: the module signing check that's blocking us? It's code inside the kernel. The kernel we can now modify on disk."
+- "If we patch that one function out of the kernel binary, the device will boot our modified kernel and happily load whatever modules we give it."
 
-## 18 - Escalate, then load
+## 18 - One function to patch
 
-- Two-step process. Keep it tight.
-- "Step one: exploit a CVE to escalate from user level to kernel level at runtime."
-- "Step two: load our kernel module. The signing check is patched out, so it loads. It reads the key from the secure registers."
-- You might briefly explain what a CVE is if the audience needs it: a publicly disclosed vulnerability with a tracking number.
+- Two beats. The action, then the payoff.
+- "The manufacturer's signing check is their own custom code - it's not part of upstream Linux. It's one function. We find it in the kernel binary on disk and overwrite it with a single return instruction."
+- "The patched kernel accepts our unsigned module. It runs at kernel level, reaches the secure register, and reads out the encryption key."
+- Then deliver the punchline: "They signed the modules but forgot to sign the kernel itself."
 
 ## 19 - Key extracted. Second lock picked
 
 - "Key extracted. Second lock picked."
-- Reflection: "How could they have done better? Keep the kernel up to date - a patched kernel has no known CVE. And verify the boot chain so we can't tamper with the kernel on disk."
-- "Both cost development time and testing. Trade-off." - This directly sets up device 3.
+- Reflection: "How could they have stopped us? One thing: verify the boot chain. If the bootloader checked the kernel's signature before loading it, it would refuse to boot our modified kernel entirely."
+- "That requires cryptographic verification in the bootloader and key management in hardware. It costs development time and silicon."
+- Pause. "Trade-off." - This word directly sets up Device 3, which adds exactly this defence.
 
 ## 20 - The signed console
 
