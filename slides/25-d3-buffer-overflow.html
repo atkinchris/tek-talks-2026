@@ -6,13 +6,13 @@
     <style>
       .mem-row {
         display: flex;
-        gap: 8px;
+        gap: 0;
         margin-bottom: 8px;
         align-items: center;
       }
+
       .mem-box {
-        height: 64px;
-        border-radius: 8px;
+        height: 80px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -20,51 +20,96 @@
         font-weight: 600;
         border: 2px solid;
       }
+
+      /* Rounded ends only on the outermost boxes */
+      .mem-box:first-child {
+        border-radius: 10px 0 0 10px;
+      }
+
+      .mem-box:last-child {
+        border-radius: 0 10px 10px 0;
+      }
+
+      /* Collapse shared borders between adjacent boxes */
+      .mem-box + .mem-box {
+        border-left: none;
+      }
+
+      /* Spill gradient for the overflow row */
+      .mem-box.spill {
+        background: linear-gradient(90deg, #fef2f2 0%, #fecaca 100%);
+        border-color: var(--accent-red);
+        color: var(--accent-red);
+      }
+
+      .mem-label-row {
+        display: flex;
+        gap: 0;
+        margin-top: 6px;
+      }
+
+      .mem-label {
+        font-size: 22px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <div class="slide" style="align-items: flex-start">
       <div class="slide-label">Buffer overflow</div>
-      <h2 style="margin-bottom: 40px">Spill into the instructions.</h2>
+      <h2 style="margin-bottom: 48px">Spill into the bootloader's code.</h2>
       <div style="display: flex; gap: 80px; width: 100%">
+        <!-- Normal -->
         <div style="flex: 1">
           <p style="font-size: 26px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; margin-bottom: 16px">Normal</p>
           <div class="mem-row">
-            <div class="mem-box" style="flex: 3; background: #eff6ff; border-color: var(--accent-blue); color: var(--accent-blue)">"hello"</div>
-            <div class="mem-box" style="flex: 1; background: var(--bg-soft); border-color: var(--border); color: var(--text-soft)">empty</div>
-            <div class="mem-box" style="flex: 2; background: #f0fdf4; border-color: var(--accent-green); color: var(--accent-green)">instruction</div>
+            <div class="mem-box" style="flex: 3; background: #eff6ff; border-color: var(--accent-blue); color: var(--accent-blue)">logo data</div>
+            <div class="mem-box" style="flex: 2; background: #f0fdf4; border-color: var(--accent-green); color: var(--accent-green)">bootloader code</div>
           </div>
-          <p style="font-size: 28px; color: var(--text-soft); margin-top: 8px">
-            Buffer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Padding &nbsp;&nbsp;&nbsp; Code
+          <div class="mem-label-row">
+            <div class="mem-label" style="flex: 3; color: var(--accent-blue)">buffer</div>
+            <div class="mem-label" style="flex: 2; color: var(--accent-green)">next to run</div>
+          </div>
+          <p style="font-size: 28px; color: var(--text-soft); margin-top: 20px">
+            The logo fits in its buffer. The bootloader's own code sits next to it in memory, untouched.
           </p>
         </div>
+
+        <!-- Overflow -->
         <div style="flex: 1">
           <p style="font-size: 26px; font-weight: 600; color: var(--accent-red); text-transform: uppercase; margin-bottom: 16px">Overflow</p>
           <div class="mem-row">
-            <div class="mem-box" style="flex: 3; background: #fef2f2; border-color: var(--accent-red); color: var(--accent-red)">"AAAAAAA..."</div>
-            <div class="mem-box" style="flex: 1; background: #fef2f2; border-color: var(--accent-red); color: var(--accent-red)">AAAA</div>
-            <div class="mem-box" style="flex: 2; background: #fef2f2; border-color: var(--accent-red); color: var(--accent-red)">our code!</div>
+            <div class="mem-box spill" style="flex: 3">oversized logo</div>
+            <div class="mem-box" style="flex: 2; background: #fecaca; border-color: var(--accent-red); color: var(--accent-red); font-weight: 700">
+              our code
+            </div>
           </div>
-          <p style="font-size: 28px; color: var(--accent-red); margin-top: 8px">Overflowed input overwrites the instruction</p>
+          <div class="mem-label-row">
+            <div class="mem-label" style="flex: 3; color: var(--accent-red)">spills past the buffer</div>
+            <div class="mem-label" style="flex: 2; color: var(--accent-red)">overwritten</div>
+          </div>
+          <p style="font-size: 28px; color: var(--accent-red); margin-top: 20px">The oversized logo spills into the bootloader's own code.</p>
         </div>
       </div>
-      <p class="soft" style="margin-top: 40px; max-width: 1400px">
-        If the software doesn't check the size of the input before writing it to memory, we can spill past the buffer and overwrite the instructions the
-        processor is about to execute.
+      <p class="soft" style="margin-top: 48px; max-width: 1400px">
+        The parser doesn't check the size of the image before writing it to memory. We control the overflow &mdash; so we control what the processor does next.
       </p>
-      <p class="soft" style="margin-top: 16px; max-width: 1400px">
-        But the boot chain already verified this code. Doesn't that stop us?
-      </p>
+      <p class="soft" style="margin-top: 16px; max-width: 1400px">But the boot chain already verified this code. Doesn't that stop us?</p>
       <div class="slide-number">25</div>
     </div>
     <aside class="notes">
       <p>Two-panel visual. Walk through both.</p>
-      <p>Normal: "The software allocates a buffer for input. The input fits. Everything is fine."</p>
       <p>
-        Overflow: "But if the input is larger than the buffer, and the software doesn't check the size, it spills past the buffer and overwrites the
-        instructions the processor is about to execute."
+        Normal: "The logo parser allocates a buffer for the splash image. The logo fits. The bootloader's own code sits right next to it in memory, untouched."
       </p>
-      <p>"By controlling the overflow, we control what the processor does next."</p>
+      <p>
+        Overflow: "But the parser doesn't check the size of the image. An oversized logo spills past the buffer and overwrites the bootloader's own code - the
+        code the processor is about to run."
+      </p>
+      <p>"We control the overflow. So we control what the processor does next."</p>
       <p>Then raise the question: "But wait - the boot chain already verified this code. Doesn't that stop us?"</p>
       <p>Leave it hanging. The next slide answers it.</p>
     </aside>
