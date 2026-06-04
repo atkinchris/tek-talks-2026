@@ -69,26 +69,26 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - Emphasise the different origins: "Each part comes from a different source - and has a different attack surface. The bootloader and rootfs are vendor-written. The kernel is upstream Linux with vendor patches."
 - The size bar reinforces how much bigger the rootfs is.
 
-## 10 - Undoing the compiler
-
-- Set up the concept: source code gets compiled into a binary. We don't have the source. Tools like Ghidra can disassemble the binary back into something readable.
-- Walk across the three columns: source, compiled binary (just hex bytes), disassembly.
-- "We don't get the source back exactly - but we get enough to understand what the code is doing."
-- This is a framing slide. Ghidra comes back later with a concrete example.
-
-## 11 - binwalk shows us the likely contents of a binary image
+## 10 - binwalk shows us the likely contents of a binary image
 
 - "Binwalk scans for known signatures - it tells us what it recognises, and what it can't explain."
 - Two results side by side: the kernel image is readable (identifiable structures), the rootfs is opaque (high entropy).
 - Key point: "The kernel is readable. The rootfs is not."
 - This naturally leads to: what does "high entropy" actually mean?
 
-## 12 - Randomness reveals structure
+## 11 - Randomness reveals structure
 
 - Worth spending a moment on. Entropy is a measure of randomness.
 - Point to the two visualisations: "Low entropy on the left - you can see patterns, structure. That's the kernel. High entropy on the right - uniform noise. That's the encrypted rootfs."
 - "The rootfs reads as near-random - it's encrypted. But the kernel? Low entropy. We can analyse it."
 - The audience should now understand why we focus on the kernel.
+
+## 12 - Undoing the compiler
+
+- Set up the concept: source code gets compiled into a binary. We don't have the source. Tools like Ghidra can disassemble the binary back into something readable.
+- Walk across the three columns: source, compiled binary (just hex bytes), disassembly.
+- "We don't get the source back exactly - but we get enough to understand what the code is doing."
+- This is a framing slide. Ghidra comes back later with a concrete example.
 
 ## 13 - Strings + Ghidra leads straight to the key
 
@@ -165,12 +165,12 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - "Splash logos - branding images loaded during boot. Processed by the bootloader, but not part of the signed chain."
 - This should feel like a small crack in the wall.
 
-## 24 - Instructions are just bytes in memory
+## 24 - Throw enough at it. Something will break
 
-- Before we can explain the buffer overflow, the audience needs to understand how code executes.
-- "Instructions are just bytes sitting in memory. The processor has a program counter - the PC - that points to the current instruction."
-- Point to the memory rows: "It reads the instruction, executes it, moves to the next address. Your program is just the PC walking through memory."
-- Key takeaway: "Control what the PC points to, and you control what the processor does."
+- "How do we find a buffer overflow? We could read the code line by line. Or we could throw thousands of malformed inputs at it and see what crashes."
+- "A crash means the software did something unexpected. And unexpected behaviour is exploitable."
+- AFL: "American Fuzzy Lop. It mutates inputs intelligently - tracks which code paths they hit, steers towards unexplored territory."
+- The punchline: "We pointed AFL at the bootloader's splash logo parser."
 
 ## 25 - Spill into the instructions
 
@@ -180,12 +180,12 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - "By controlling the overflow, we control what the processor does next."
 - Foundational security concept. Let it breathe.
 
-## 26 - Throw enough at it. Something will break
+## 26 - Instructions are just bytes in memory
 
-- "How do we find a buffer overflow? We could read the code line by line. Or we could throw thousands of malformed inputs at it and see what crashes."
-- "A crash means the software did something unexpected. And unexpected behaviour is exploitable."
-- AFL: "American Fuzzy Lop. It mutates inputs intelligently - tracks which code paths they hit, steers towards unexplored territory."
-- The punchline: "We pointed AFL at the bootloader's splash logo parser."
+- Before we can explain the buffer overflow, the audience needs to understand how code executes.
+- "Instructions are just bytes sitting in memory. The processor has a program counter - the PC - that points to the current instruction."
+- Point to the memory rows: "It reads the instruction, executes it, moves to the next address. Your program is just the PC walking through memory."
+- Key takeaway: "Control what the PC points to, and you control what the processor does."
 
 ## 27 - Found a buffer overflow in the logo parser
 
@@ -215,3 +215,8 @@ Notes per slide. Not a script - prompts and key points to hit. Know the material
 - "Understanding how systems are built - and broken - makes you a better engineer. Whatever you're building."
 - Pause. Don't rush to "any questions". Let the last line sit.
 - Then: "I'll take questions."
+
+## 31 - How many files are in the root filesystem of the first device?
+
+- Audience participation. Give them a moment to shout out answers before revealing.
+- Answer: 1,472 files.
