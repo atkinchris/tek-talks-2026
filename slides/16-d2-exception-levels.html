@@ -6,8 +6,8 @@
   </head>
   <body>
     <div class="slide" style="align-items: flex-start">
-      <div class="slide-label">Exception levels</div>
-      <h2 style="margin-bottom: 48px">Not all code runs equal.</h2>
+      <div class="slide-label">The wall</div>
+      <h2 style="margin-bottom: 48px">We have a shell. We need the kernel.</h2>
 
       <svg viewBox="0 0 1400 480" width="1400" height="480" style="max-width: 100%">
         <!-- SOFTWARE column header -->
@@ -19,7 +19,7 @@
         <!-- EL0 - User land -->
         <rect x="80" y="52" width="440" height="110" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
         <text x="300" y="96" text-anchor="middle" fill="#2563eb" font-size="28" font-weight="700" font-family="system-ui, sans-serif">EL0 - User land</text>
-        <text x="300" y="130" text-anchor="middle" fill="#555" font-size="20" font-family="system-ui, sans-serif">Your app, games, shell</text>
+        <text x="300" y="130" text-anchor="middle" fill="#555" font-size="20" font-family="system-ui, sans-serif">Our UART shell lives here</text>
 
         <!-- Syscall arrow -->
         <text x="300" y="194" text-anchor="middle" fill="#555" font-size="22" font-family="system-ui, sans-serif">&#9660; syscall</text>
@@ -27,7 +27,7 @@
         <!-- EL1 - Kernel -->
         <rect x="80" y="212" width="440" height="110" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5" />
         <text x="300" y="256" text-anchor="middle" fill="#16a34a" font-size="28" font-weight="700" font-family="system-ui, sans-serif">EL1 - Kernel</text>
-        <text x="300" y="290" text-anchor="middle" fill="#555" font-size="20" font-family="system-ui, sans-serif">Manages hardware, enforces access</text>
+        <text x="300" y="290" text-anchor="middle" fill="#555" font-size="20" font-family="system-ui, sans-serif">Controls hardware access</text>
 
         <!-- HARDWARE column header -->
         <text x="1000" y="24" text-anchor="middle" fill="#555" font-size="18" font-weight="600" letter-spacing="0.12em" font-family="system-ui, sans-serif">
@@ -77,18 +77,20 @@
 
         <!-- Narrative -->
         <text x="700" y="450" text-anchor="middle" fill="#555" font-size="20" font-style="italic" font-family="system-ui, sans-serif">
-          User land can't reach the hardware directly. We need to be the kernel.
+          Our UART shell runs at EL0. The key is locked behind EL1.
         </text>
       </svg>
 
-      <p class="soft" style="margin-top: 32px; max-width: 1200px">We need a kernel module &mdash; but the kernel won't load unsigned ones.</p>
+      <p class="soft" style="margin-top: 32px">We need to run our own code at kernel level - but the kernel won't load unsigned modules.</p>
       <div class="slide-number">16</div>
     </div>
     <aside class="notes">
-      <p>Concept aside. Clear but not over-explained.</p>
-      <p>Walk through the diagram: "Your apps run at the top - user land, EL0. They can't access hardware directly."</p>
-      <p>"The kernel runs at EL1. It manages hardware, enforces access. A kernel module can reach the secure registers."</p>
-      <p>Key point: "We need to be the kernel. We need a kernel module - but the kernel won't load unsigned ones."</p>
+      <p>"We have a UART shell from the same technique as Device 1. But our shell runs in user-land - EL0."</p>
+      <p>Walk through the diagram: "The key sits in a secure hardware register. Only the kernel, running at EL1, can reach it through a kernel module."</p>
+      <p>"From user-land? No access. We're on the wrong side of the privilege boundary."</p>
+      <p>
+        Build the tension: "We need to run our own code at kernel level. But the kernel has a module signing check - it won't load anything we haven't signed."
+      </p>
     </aside>
   </body>
 </html>

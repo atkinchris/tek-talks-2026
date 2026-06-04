@@ -6,28 +6,60 @@
   </head>
   <body>
     <div class="slide" style="align-items: flex-start">
-      <div class="slide-label">The approach</div>
-      <h2 style="margin-bottom: 48px">Pick your battle carefully.</h2>
-      <div style="display: flex; gap: 0; width: 100%; border-radius: 12px; overflow: hidden; border: 2px solid var(--border)">
-        <div class="box box-red" style="flex: 1; border-radius: 0; border: none; border-right: 2px solid var(--border); padding: 48px 56px">
-          <h3 class="red" style="margin-bottom: 20px">Don't touch</h3>
-          <p style="font-size: 34px; margin-bottom: 12px; color: var(--text)">Linux access controls</p>
-          <p>Battle-tested across decades and millions of deployments. Spread across too many places to patch reliably.</p>
-        </div>
-        <div class="box box-green" style="flex: 1; border-radius: 0; border: none; padding: 48px 56px">
-          <h3 class="green" style="margin-bottom: 20px">Patch this</h3>
-          <p style="font-size: 34px; margin-bottom: 12px; color: var(--text)">Manufacturer signing check</p>
-          <p>Custom code, not in the upstream kernel. Younger, less battle-tested. One function to patch out.</p>
-        </div>
-      </div>
-      <p class="soft" style="margin-top: 40px">No boot-chain verification means we can modify the kernel on disk before it ever boots.</p>
+      <div class="slide-label">The gap</div>
+      <h2 style="margin-bottom: 48px">Nobody checks the kernel.</h2>
+
+      <svg viewBox="0 0 1400 380" width="1400" height="380" style="max-width: 100%">
+        <!-- Bootloader box -->
+        <rect x="30" y="60" width="300" height="140" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+        <text x="180" y="120" text-anchor="middle" fill="#2563eb" font-size="30" font-weight="700" font-family="system-ui, sans-serif">Bootloader</text>
+        <text x="180" y="158" text-anchor="middle" fill="#555" font-size="19" font-family="system-ui, sans-serif">Burned into ROM</text>
+
+        <!-- Dashed arrow - no verification -->
+        <line x1="330" y1="130" x2="500" y2="130" stroke="#dc2626" stroke-width="3" stroke-dasharray="10,6" />
+        <text x="415" y="108" text-anchor="middle" fill="#dc2626" font-size="15" font-weight="700" letter-spacing="0.08em" font-family="system-ui, sans-serif">
+          &#10007; NO CHECK
+        </text>
+
+        <!-- Kernel box - red (vulnerable) -->
+        <rect x="500" y="60" width="300" height="140" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5" />
+        <text x="650" y="120" text-anchor="middle" fill="#dc2626" font-size="30" font-weight="700" font-family="system-ui, sans-serif">Kernel</text>
+        <text x="650" y="158" text-anchor="middle" fill="#555" font-size="19" font-family="system-ui, sans-serif">On writable storage</text>
+
+        <!-- Solid arrow - signing check present -->
+        <line x1="800" y1="130" x2="970" y2="130" stroke="#16a34a" stroke-width="3" />
+        <polygon points="964,119 980,130 964,141" fill="#16a34a" />
+        <rect x="838" y="107" width="86" height="28" rx="6" fill="white" stroke="#16a34a" stroke-width="1.5" />
+        <text x="881" y="127" text-anchor="middle" fill="#16a34a" font-size="13" font-weight="600" font-family="system-ui, sans-serif">sig check</text>
+
+        <!-- Modules box -->
+        <rect x="980" y="60" width="300" height="140" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5" />
+        <text x="1130" y="120" text-anchor="middle" fill="#16a34a" font-size="30" font-weight="700" font-family="system-ui, sans-serif">Modules</text>
+        <text x="1130" y="158" text-anchor="middle" fill="#555" font-size="19" font-family="system-ui, sans-serif">Signature required</text>
+
+        <!-- Annotation arrow pointing down to kernel box -->
+        <line x1="650" y1="200" x2="650" y2="275" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,4" />
+        <polygon points="641,269 650,285 659,269" fill="#dc2626" />
+        <text x="650" y="320" text-anchor="middle" fill="#dc2626" font-size="24" font-weight="600" font-family="system-ui, sans-serif">
+          We can modify this before boot
+        </text>
+        <text x="650" y="355" text-anchor="middle" fill="#555" font-size="20" font-style="italic" font-family="system-ui, sans-serif">
+          ...and the signing check lives inside it
+        </text>
+      </svg>
+
+      <p class="large" style="margin-top: 32px">The bootloader loads whatever kernel it finds on disk. No signature. No integrity check.</p>
+      <p class="soft" style="margin-top: 16px">If we patch the kernel binary, we control what modules it accepts.</p>
       <div class="slide-number">17</div>
     </div>
     <aside class="notes">
-      <p>Two options. Walk through why one is hard and the other is easy.</p>
-      <p>"Could we attack Linux's access controls? Battle-tested across decades. Spread across too many places to patch reliably."</p>
-      <p>"But the manufacturer's signing check? Custom code, not in upstream Linux. Younger, less tested. One function to patch out."</p>
-      <p>"And there's no boot-chain verification - so we can modify the kernel on disk before it ever boots."</p>
+      <p>This is the turning point. Pause before delivering the title.</p>
+      <p>
+        "The bootloader is burned into ROM - we can't touch it. But look at what it does next: it loads the kernel from writable storage with no signature
+        check. No integrity verification. Nothing."
+      </p>
+      <p>"And here's the key insight: the module signing check that's blocking us? It's code inside the kernel. The kernel we can now modify on disk."</p>
+      <p>"If we patch that one function out of the kernel binary, the device will boot our modified kernel and happily load whatever modules we give it."</p>
     </aside>
   </body>
 </html>

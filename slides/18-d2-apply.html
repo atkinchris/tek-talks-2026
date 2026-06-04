@@ -6,32 +6,41 @@
   </head>
   <body>
     <div class="slide" style="align-items: flex-start">
-      <div class="slide-label">Applying it</div>
-      <h2 style="margin-bottom: 48px">Escalate, then load.</h2>
+      <div class="slide-label">The attack</div>
+      <h2 style="margin-bottom: 48px">One function to patch.</h2>
       <div style="display: flex; gap: 24px; width: 100%; align-items: stretch">
-        <div class="box" style="flex: 1">
-          <p style="font-size: 26px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px">
-            Step 1
+        <div class="box box-red" style="flex: 1">
+          <p style="font-size: 26px; font-weight: 600; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px">
+            The patch
           </p>
-          <h3 style="margin-bottom: 12px">CVE exploit</h3>
-          <p style="font-size: 32px">Escalate from user level (EL0) to kernel level (EL1) at runtime.</p>
+          <h3 style="margin-bottom: 12px">Disable module signing</h3>
+          <p style="font-size: 30px">
+            The manufacturer's signing check is custom code, not upstream Linux. One function. We overwrite it with a return instruction in the kernel binary on
+            disk.
+          </p>
         </div>
         <div style="font-size: 48px; color: var(--text-soft); align-self: center; flex-shrink: 0">&#8594;</div>
         <div class="box box-green" style="flex: 1">
           <p style="font-size: 26px; font-weight: 600; color: var(--accent-green); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px">
-            Step 2
+            The result
           </p>
-          <h3 style="margin-bottom: 12px">Load kernel module</h3>
-          <p style="font-size: 32px">Signing check is patched out. Module reads key from secure registers.</p>
+          <h3 style="margin-bottom: 12px">Key extracted</h3>
+          <p style="font-size: 30px">
+            The patched kernel accepts our unsigned module. It runs at EL1, reaches the secure register, and reads out the encryption key.
+          </p>
         </div>
       </div>
+      <p class="soft" style="margin-top: 48px">They signed the modules but forgot to sign the kernel itself.</p>
       <div class="slide-number">18</div>
     </div>
     <aside class="notes">
-      <p>Two-step process. Keep it tight.</p>
-      <p>"Step one: exploit a CVE to escalate from user level to kernel level at runtime."</p>
-      <p>"Step two: load our kernel module. The signing check is patched out, so it loads. It reads the key from the secure registers."</p>
-      <p>You might briefly explain what a CVE is if the audience needs it: a publicly disclosed vulnerability with a tracking number.</p>
+      <p>Two beats. The action, then the payoff.</p>
+      <p>
+        "The manufacturer's signing check is their own custom code - it's not part of upstream Linux. It's one function. We find it in the kernel binary on disk
+        and overwrite it with a single return instruction."
+      </p>
+      <p>"The patched kernel accepts our unsigned module. It runs at kernel level, reaches the secure register, and reads out the encryption key."</p>
+      <p>Then deliver the punchline: "They signed the modules but forgot to sign the kernel itself."</p>
     </aside>
   </body>
 </html>

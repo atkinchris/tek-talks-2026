@@ -11,8 +11,9 @@
       <h2 style="margin-top: 24px">Key extracted. Second lock picked.</h2>
       <div class="box" style="margin-top: 48px; border-color: var(--border)">
         <p>
-          <strong>How could they have done better?</strong> Keep the kernel up to date &mdash; a patched kernel has no known CVE to exploit. And verify the boot
-          chain, so we can't tamper the kernel on disk in the first place. Both cost development time and testing. Trade-off.
+          <strong>How could they have done better?</strong> Verify the boot chain. If the bootloader checked the kernel's signature before loading it, it would
+          refuse to boot our modified kernel entirely. That requires cryptographic verification in the bootloader and key management in hardware. It costs
+          development time and silicon. Trade-off.
         </p>
       </div>
       <div class="slide-number">19</div>
@@ -20,10 +21,11 @@
     <aside class="notes">
       <p>"Key extracted. Second lock picked."</p>
       <p>
-        Reflection: "How could they have done better? Keep the kernel up to date - a patched kernel has no known CVE. And verify the boot chain so we can't
-        tamper with the kernel on disk."
+        Reflection: "How could they have stopped us? One thing: verify the boot chain. If the bootloader checked the kernel's signature before loading it, it
+        would refuse to boot our modified kernel entirely."
       </p>
-      <p>"Both cost development time and testing. Trade-off." - This directly sets up device 3.</p>
+      <p>"That requires cryptographic verification in the bootloader and key management in hardware. It costs development time and silicon."</p>
+      <p>Pause. "Trade-off." - This word directly sets up Device 3, which adds exactly this defence.</p>
     </aside>
   </body>
 </html>
