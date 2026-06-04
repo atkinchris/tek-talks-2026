@@ -52,6 +52,9 @@
         If the software doesn't check the size of the input before writing it to memory, we can spill past the buffer and overwrite the instructions the
         processor is about to execute.
       </p>
+      <p class="soft" style="margin-top: 16px; max-width: 1400px">
+        But the boot chain already verified this code. Doesn't that stop us?
+      </p>
       <div class="slide-number">25</div>
     </div>
     <aside class="notes">
@@ -62,7 +65,8 @@
         instructions the processor is about to execute."
       </p>
       <p>"By controlling the overflow, we control what the processor does next."</p>
-      <p>Foundational security concept. Let it breathe.</p>
+      <p>Then raise the question: "But wait - the boot chain already verified this code. Doesn't that stop us?"</p>
+      <p>Leave it hanging. The next slide answers it.</p>
     </aside>
   </body>
 </html>
